@@ -1,3 +1,0 @@
-{"$id":"purchase_order_line:55555555-5555-4555-8555-555555555501","$v":1,"Amount":"1450000.00","ItemDescription":"MS Structural Beam ISMB 300","LineNo":1,"PurchaseOrderId":"purchase_order:44444444-4444-4444-8444-444444444401","Qty":"12.500","Rate":"116000.00"}
-{"$id":"purchase_order_line:55555555-5555-4555-8555-555555555502","$v":1,"Amount":"261000.00","ItemDescription":"Freight and handling","LineNo":2,"PurchaseOrderId":"purchase_order:44444444-4444-4444-8444-444444444401","Qty":"1.000","Rate":"261000.00"}
-{"$id":"purchase_order_line:55555555-5555-4555-8555-555555555503","$v":1,"Amount":"98500.50","ItemDescription":"Hydraulic seal kit","LineNo":1,"PurchaseOrderId":"purchase_order:44444444-4444-4444-8444-444444444402","Qty":"5.000","Rate":"19700.10"}

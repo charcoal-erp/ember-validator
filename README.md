@@ -53,23 +53,28 @@ carrying the natural keys the importer resolves them by, catalog references reso
 self-contained — writing an adapter needs only that document and this validator. Key words are
 RFC 2119.
 
-## Goldens — the 36-month support window
+## Goldens — how the support window is enforced
 
 The spec makes a promise: **an importer MUST accept any bundle produced in the preceding 36
-months** (§11). `goldens/` is how that is enforced mechanically rather than by intention —
-sealed, signed bundles, one per format era, which Charcoal's CI verifies on every build and
-asserts are still readable at current resource versions. A version bumped without a registered
-migration is a red build.
-
-They are committed here rather than kept internal for two reasons: you can see the promise is
-real, and if you are writing your own consumer they make a ready-made regression corpus.
+months** (§11). `goldens/` is how that becomes mechanical rather than aspirational — a sealed,
+signed bundle per format era, which Charcoal's CI verifies on every build and asserts is still
+readable at current resource versions. A version bumped without a registered migration, or a
+column dropped, is a red build.
 
 ```bash
 node bin/ember-validate.mjs verify goldens/1.0-full --pubkey goldens/signing-key.pub.json
 ```
 
-`goldens/index.json` records each one's provenance and pins its `bundleDigest`.
-See [`goldens/README.md`](goldens/README.md) — they are **sealed artifacts**, not fixtures to
+**Current status: pre-general-availability.** The window counts bundles issued to customers, and
+Charcoal has not yet made a GA release — so the corpus here is deliberately a single bundle
+serving as a smoke test, and the support window formally begins at GA. This is stated rather than
+implied because a corpus that looks bigger than its guarantee is worse than an honest one.
+
+They are committed here rather than kept internal so you can see the mechanism is real, and so
+that if you are writing your own consumer they give you a ready-made regression corpus.
+
+`goldens/index.json` records provenance and pins the `bundleDigest`.
+See [`goldens/README.md`](goldens/README.md) — these are **sealed artifacts**, not fixtures to
 regenerate.
 
 ## Examples
