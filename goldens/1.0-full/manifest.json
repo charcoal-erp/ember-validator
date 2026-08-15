@@ -1,0 +1,656 @@
+{
+  "formatVersion": "1.0",
+  "bundleId": "ac3e0000-0000-4000-8000-000000000001",
+  "bundleType": "subset",
+  "profile": "fixture",
+  "createdAt": "2026-08-14T00:00:00.000Z",
+  "producer": {
+    "product": "charcoal",
+    "version": "phase2-manifest",
+    "deploymentMode": "on_premise"
+  },
+  "organization": {
+    "id": "e14400c4-2897-4ad3-a47e-295f2a38e285",
+    "code": "ACME",
+    "legalName": "Acme Manufacturing Private Limited",
+    "companies": [
+      {
+        "id": "6c761bac-afda-4da9-83b0-5f88458f0aa3",
+        "code": "Acme Pharma Pvt Ltd",
+        "name": "Acme Pharma Pvt Ltd"
+      },
+      {
+        "id": "aa96a21f-7844-41bb-aea2-1d1caad0f9ee",
+        "code": "Acme Engineering Pvt Ltd",
+        "name": "Acme Engineering Pvt Ltd"
+      },
+      {
+        "id": "c30ab260-8c17-45f1-9242-1aac4cc8fe9c",
+        "code": "Acme Micro Unit",
+        "name": "Acme Micro Unit"
+      }
+    ]
+  },
+  "options": {
+    "sourceTimezone": "Asia/Kolkata",
+    "blobsIncluded": false,
+    "credentialsIncluded": false,
+    "redactionSaltFingerprint": "sha256:2323b2085c2724e0",
+    "consistencyMode": "per-db-snapshot",
+    "maxSkewSeconds": 1,
+    "piiRedacted": true,
+    "auditExcluded": true,
+    "platformDataExcluded": true
+  },
+  "consistency": [
+    {
+      "database": "core_test",
+      "snapshotLsn": "0/A91C18E0",
+      "snapshotTxid": "830174:830174:",
+      "snapshotAt": "2026-08-14T15:44:57.340Z",
+      "isolation": "repeatable read"
+    },
+    {
+      "database": "accounting_test",
+      "snapshotLsn": "0/A91C18E0",
+      "snapshotTxid": "830174:830174:",
+      "snapshotAt": "2026-08-14T15:44:57.466Z",
+      "isolation": "repeatable read"
+    },
+    {
+      "database": "assets_test",
+      "snapshotLsn": "0/A91C18E0",
+      "snapshotTxid": "830174:830174:",
+      "snapshotAt": "2026-08-14T15:44:57.475Z",
+      "isolation": "repeatable read"
+    },
+    {
+      "database": "payroll_test",
+      "snapshotLsn": "0/A91C18E0",
+      "snapshotTxid": "830174:830174:",
+      "snapshotAt": "2026-08-14T15:44:57.485Z",
+      "isolation": "repeatable read"
+    },
+    {
+      "database": "hr_test",
+      "snapshotLsn": "0/A91C18E0",
+      "snapshotTxid": "830174:830174:",
+      "snapshotAt": "2026-08-14T15:44:57.495Z",
+      "isolation": "repeatable read"
+    },
+    {
+      "database": "procurement_test",
+      "snapshotLsn": "0/A91C18E0",
+      "snapshotTxid": "830174:830174:",
+      "snapshotAt": "2026-08-14T15:44:57.538Z",
+      "isolation": "repeatable read"
+    },
+    {
+      "database": "sales_test",
+      "snapshotLsn": "0/A91C18E0",
+      "snapshotTxid": "830174:830174:",
+      "snapshotAt": "2026-08-14T15:44:57.570Z",
+      "isolation": "repeatable read"
+    },
+    {
+      "database": "crm_test",
+      "snapshotLsn": "0/A91C18E0",
+      "snapshotTxid": "830174:830174:",
+      "snapshotAt": "2026-08-14T15:44:57.660Z",
+      "isolation": "repeatable read"
+    },
+    {
+      "database": "inventory_test",
+      "snapshotLsn": "0/A91C18E0",
+      "snapshotTxid": "830174:830174:",
+      "snapshotAt": "2026-08-14T15:44:57.683Z",
+      "isolation": "repeatable read"
+    },
+    {
+      "database": "expense_management_test",
+      "snapshotLsn": "0/A91D2000",
+      "snapshotTxid": "830174:830174:",
+      "snapshotAt": "2026-08-14T15:44:57.965Z",
+      "isolation": "repeatable read"
+    },
+    {
+      "database": "mfg_project_test",
+      "snapshotLsn": "0/A91D2000",
+      "snapshotTxid": "830174:830174:",
+      "snapshotAt": "2026-08-14T15:44:58.004Z",
+      "isolation": "repeatable read"
+    },
+    {
+      "database": "mfg_batch_discrete_test",
+      "snapshotLsn": "0/A91DC000",
+      "snapshotTxid": "830174:830174:",
+      "snapshotAt": "2026-08-14T15:44:58.164Z",
+      "isolation": "repeatable read"
+    },
+    {
+      "database": "mfg_batch_process_test",
+      "snapshotLsn": "0/A91DC000",
+      "snapshotTxid": "830174:830174:",
+      "snapshotAt": "2026-08-14T15:44:58.195Z",
+      "isolation": "repeatable read"
+    },
+    {
+      "database": "mfg_mass_test",
+      "snapshotLsn": "0/A91DC000",
+      "snapshotTxid": "830174:830174:",
+      "snapshotAt": "2026-08-14T15:44:58.232Z",
+      "isolation": "repeatable read"
+    },
+    {
+      "database": "marketing_test",
+      "snapshotLsn": "0/A91DE000",
+      "snapshotTxid": "830174:830174:",
+      "snapshotAt": "2026-08-14T15:44:58.785Z",
+      "isolation": "repeatable read"
+    }
+  ],
+  "resources": [
+    {
+      "resource": "organization",
+      "module": "core",
+      "resourceVersion": 1,
+      "file": "data/010-core/organization.ndjson",
+      "schema": "schema/core.organization.v1.schema.json",
+      "recordCount": 1,
+      "sha256": "38110d8501eaef92cd3fe5f685dbb83445f679713d455fdbbe24012a0c6d103d",
+      "dependsOn": [],
+      "contentClass": "business",
+      "deleteSemantics": "soft",
+      "embeds": []
+    },
+    {
+      "resource": "company",
+      "module": "core",
+      "resourceVersion": 1,
+      "file": "data/010-core/company.ndjson",
+      "schema": "schema/core.company.v1.schema.json",
+      "recordCount": 2,
+      "sha256": "695c0786282c13f68c6c07855fc97969da62ddd723a79d6963340e54f1f39d2a",
+      "dependsOn": [
+        "organization"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "soft",
+      "embeds": []
+    },
+    {
+      "resource": "customer",
+      "module": "core",
+      "resourceVersion": 1,
+      "file": "data/010-core/customer.ndjson",
+      "schema": "schema/core.customer.v1.schema.json",
+      "recordCount": 1,
+      "sha256": "d02ccea62478e18cc36b4b386aff0d83256efd96d53a6dc028fe157658a47669",
+      "dependsOn": [
+        "company",
+        "user"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "soft",
+      "embeds": []
+    },
+    {
+      "resource": "account",
+      "module": "crm",
+      "resourceVersion": 1,
+      "file": "data/500-crm/account.ndjson",
+      "schema": "schema/crm.account.v1.schema.json",
+      "recordCount": 1,
+      "sha256": "4c962bd5aa44111867625b77dfb463ef2a97b390507d9bedc26fe9cad6863dab",
+      "dependsOn": [
+        "company",
+        "customer",
+        "organization"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "soft",
+      "embeds": []
+    },
+    {
+      "resource": "chart_of_accounts",
+      "module": "accounting",
+      "resourceVersion": 1,
+      "file": "data/500-accounting/chart_of_accounts.ndjson",
+      "schema": "schema/accounting.chart_of_accounts.v1.schema.json",
+      "recordCount": 14,
+      "sha256": "1b8f0f0d6da5c2623962b2dd49e1a409e7f31aecdae9c1839119bce92170737b",
+      "dependsOn": [
+        "company"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "soft",
+      "embeds": []
+    },
+    {
+      "resource": "accounting_customer",
+      "module": "accounting",
+      "resourceVersion": 1,
+      "file": "data/500-accounting/accounting_customer.ndjson",
+      "schema": "schema/accounting.accounting_customer.v1.schema.json",
+      "recordCount": 2,
+      "sha256": "386fcc7c1e08de5bd70a2e1d78af7e1f689f3de824c06cd9c53824b11f80d2d3",
+      "dependsOn": [
+        "company"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "soft",
+      "embeds": []
+    },
+    {
+      "resource": "journal_entry",
+      "module": "accounting",
+      "resourceVersion": 1,
+      "file": "data/500-accounting/journal_entry.ndjson",
+      "schema": "schema/accounting.journal_entry.v1.schema.json",
+      "recordCount": 3,
+      "sha256": "a531c79d50570c7b94098d5cbdebb9f19b602e313990f42c647a0a41278a6087",
+      "dependsOn": [
+        "company",
+        "legal_entity"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "none",
+      "embeds": [
+        "journal_entry_line"
+      ]
+    },
+    {
+      "resource": "vendor",
+      "module": "core",
+      "resourceVersion": 1,
+      "file": "data/010-core/vendor.ndjson",
+      "schema": "schema/core.vendor.v1.schema.json",
+      "recordCount": 4,
+      "sha256": "10eddd173964365bbf0dc1f879bdc9f710899a23b3b635d5c905dd1944d56ef1",
+      "dependsOn": [
+        "company",
+        "user"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "soft",
+      "embeds": []
+    },
+    {
+      "resource": "rfq",
+      "module": "procurement",
+      "resourceVersion": 1,
+      "file": "data/050-procurement/rfq.ndjson",
+      "schema": "schema/procurement.rfq.v1.schema.json",
+      "recordCount": 1,
+      "sha256": "bb3f13cce608c141b048ab76298a3dfeecba8eb2c77d56884daa327368cf915e",
+      "dependsOn": [
+        "company",
+        "purchase_requisition"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "soft",
+      "embeds": []
+    },
+    {
+      "resource": "vendor_quotation",
+      "module": "procurement",
+      "resourceVersion": 1,
+      "file": "data/050-procurement/vendor_quotation.ndjson",
+      "schema": "schema/procurement.vendor_quotation.v1.schema.json",
+      "recordCount": 2,
+      "sha256": "2921819df5fe2ac1bad1a2566b0f6a3ebb7f34275cbea840619bf243cf2d3b62",
+      "dependsOn": [
+        "rfq",
+        "vendor"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "none",
+      "embeds": []
+    },
+    {
+      "resource": "procurement_purchase_order",
+      "module": "procurement",
+      "resourceVersion": 1,
+      "file": "data/050-procurement/procurement_purchase_order.ndjson",
+      "schema": "schema/procurement.procurement_purchase_order.v1.schema.json",
+      "recordCount": 3,
+      "sha256": "1a61d05e6d28494ff05201eafd03699f9ccd8f76592d24cd492926c18a1c673b",
+      "dependsOn": [
+        "chart_of_accounts",
+        "company",
+        "cost_center",
+        "purchase_requisition",
+        "rate_contract",
+        "rfq",
+        "site",
+        "vendor",
+        "vendor_quotation",
+        "warehouse"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "soft",
+      "embeds": [
+        "po_line"
+      ]
+    },
+    {
+      "resource": "contact",
+      "module": "crm",
+      "resourceVersion": 1,
+      "file": "data/500-crm/contact.ndjson",
+      "schema": "schema/crm.contact.v1.schema.json",
+      "recordCount": 1,
+      "sha256": "f25ee974c9b0cf6ac3f6bbaf41db3bcfe47ac53f456b14c2b929c9d8d39a31e6",
+      "dependsOn": [
+        "account",
+        "company",
+        "organization"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "soft",
+      "embeds": []
+    },
+    {
+      "resource": "pipeline",
+      "module": "sales",
+      "resourceVersion": 1,
+      "file": "data/500-sales/pipeline.ndjson",
+      "schema": "schema/sales.pipeline.v1.schema.json",
+      "recordCount": 1,
+      "sha256": "93a5edd686807cb4195675e6e05432bc8c0ccb00401c9cb328ad471fe62a151d",
+      "dependsOn": [
+        "company",
+        "organization"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "soft",
+      "embeds": []
+    },
+    {
+      "resource": "pipeline_stage",
+      "module": "sales",
+      "resourceVersion": 1,
+      "file": "data/500-sales/pipeline_stage.ndjson",
+      "schema": "schema/sales.pipeline_stage.v1.schema.json",
+      "recordCount": 5,
+      "sha256": "f3e799b246b225d83db7f5952f15124c89dd7e95d48a53c31c22f249e81e20f9",
+      "dependsOn": [
+        "pipeline"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "soft",
+      "embeds": []
+    },
+    {
+      "resource": "deal",
+      "module": "sales",
+      "resourceVersion": 1,
+      "file": "data/500-sales/deal.ndjson",
+      "schema": "schema/sales.deal.v1.schema.json",
+      "recordCount": 1,
+      "sha256": "42c558bc51db7a738b5b37b146b530655ca7966a6ac9bd743d5c944388e212a2",
+      "dependsOn": [
+        "company",
+        "contact",
+        "lead",
+        "organization",
+        "pipeline",
+        "pipeline_stage"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "soft",
+      "embeds": []
+    },
+    {
+      "resource": "brand",
+      "module": "inventory",
+      "resourceVersion": 1,
+      "file": "data/500-inventory/brand.ndjson",
+      "schema": "schema/inventory.brand.v1.schema.json",
+      "recordCount": 1,
+      "sha256": "87c14e77d75926f11bb8601440a5a73fc5485bb49b1b4808f370d55d6c8bf61d",
+      "dependsOn": [
+        "company"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "soft",
+      "embeds": []
+    },
+    {
+      "resource": "category",
+      "module": "inventory",
+      "resourceVersion": 1,
+      "file": "data/500-inventory/category.ndjson",
+      "schema": "schema/inventory.category.v1.schema.json",
+      "recordCount": 2,
+      "sha256": "876cbbb610323fb1d8afdf5d6c4a6ce521008e41e3748c1bc9f1e6998521d430",
+      "dependsOn": [
+        "company"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "soft",
+      "embeds": []
+    },
+    {
+      "resource": "product",
+      "module": "inventory",
+      "resourceVersion": 1,
+      "file": "data/500-inventory/product.ndjson",
+      "schema": "schema/inventory.product.v1.schema.json",
+      "recordCount": 1,
+      "sha256": "cdc4cb1b2044c081fee2a3e10ec298ea49f7925be486acb9099e5a24f50fdc5b",
+      "dependsOn": [
+        "brand",
+        "category",
+        "company"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "soft",
+      "embeds": []
+    },
+    {
+      "resource": "quote",
+      "module": "sales",
+      "resourceVersion": 1,
+      "file": "data/500-sales/quote.ndjson",
+      "schema": "schema/sales.quote.v1.schema.json",
+      "recordCount": 1,
+      "sha256": "a441c0211d3cfebd344b722ea4e8aa5b6b50f2d75bbf16aad20c840ccb98a6e6",
+      "dependsOn": [
+        "company",
+        "contact",
+        "customer",
+        "deal",
+        "organization"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "hard",
+      "embeds": []
+    },
+    {
+      "resource": "o2c_sales_order",
+      "module": "sales",
+      "resourceVersion": 1,
+      "file": "data/500-sales/o2c_sales_order.ndjson",
+      "schema": "schema/sales.o2c_sales_order.v1.schema.json",
+      "recordCount": 1,
+      "sha256": "45e7287005921fbf0d26a9fe372e76998e6a6c77e8b6a3a1e2ca5c232a158126",
+      "dependsOn": [
+        "company",
+        "contact",
+        "customer",
+        "deal",
+        "legal_entity",
+        "organization",
+        "quote"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "none",
+      "embeds": [
+        "o2c_sales_order_line"
+      ]
+    },
+    {
+      "resource": "customer_invoice",
+      "module": "accounting",
+      "resourceVersion": 1,
+      "file": "data/500-accounting/customer_invoice.ndjson",
+      "schema": "schema/accounting.customer_invoice.v1.schema.json",
+      "recordCount": 3,
+      "sha256": "2871ea5092182cac2a92e1b70393c6f773fd3452df59553d08ba718189800dba",
+      "dependsOn": [
+        "accounting_customer",
+        "company",
+        "journal_entry",
+        "legal_entity",
+        "o2c_sales_order",
+        "quote"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "soft",
+      "embeds": [
+        "customer_invoice_line"
+      ]
+    },
+    {
+      "resource": "purchase_order_in",
+      "module": "procurement",
+      "resourceVersion": 1,
+      "file": "data/050-procurement/purchase_order_in.ndjson",
+      "schema": "schema/procurement.purchase_order_in.v1.schema.json",
+      "recordCount": 1,
+      "sha256": "7941f751f18f9b66b4288e1b5fdd75314f2525969a608141eb7ddae1b3184d85",
+      "dependsOn": [
+        "procurement_purchase_order"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "none",
+      "embeds": []
+    },
+    {
+      "resource": "quote_line_item",
+      "module": "sales",
+      "resourceVersion": 1,
+      "file": "data/500-sales/quote_line_item.ndjson",
+      "schema": "schema/sales.quote_line_item.v1.schema.json",
+      "recordCount": 1,
+      "sha256": "fdefe9e8c476d6f188ad6ae07d812e84001bc44bdfa57ab9ba7aa9150848b72a",
+      "dependsOn": [
+        "product",
+        "quote"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "none",
+      "embeds": []
+    },
+    {
+      "resource": "rfq_line",
+      "module": "procurement",
+      "resourceVersion": 1,
+      "file": "data/050-procurement/rfq_line.ndjson",
+      "schema": "schema/procurement.rfq_line.v1.schema.json",
+      "recordCount": 2,
+      "sha256": "161d0d768da2dea0dfd26f36c5116ca38be6530f769af737aae6158ff7c77043",
+      "dependsOn": [
+        "rfq",
+        "vendor"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "none",
+      "embeds": []
+    },
+    {
+      "resource": "rfq_vendor_invitation",
+      "module": "procurement",
+      "resourceVersion": 1,
+      "file": "data/050-procurement/rfq_vendor_invitation.ndjson",
+      "schema": "schema/procurement.rfq_vendor_invitation.v1.schema.json",
+      "recordCount": 2,
+      "sha256": "01ed3978ac90cd4165672f3174571b43b641ccdf5f34ad3430acf921bb03d5a5",
+      "dependsOn": [
+        "rfq",
+        "vendor",
+        "vendor_quotation"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "none",
+      "embeds": []
+    },
+    {
+      "resource": "vendor_quotation_line",
+      "module": "procurement",
+      "resourceVersion": 1,
+      "file": "data/050-procurement/vendor_quotation_line.ndjson",
+      "schema": "schema/procurement.vendor_quotation_line.v1.schema.json",
+      "recordCount": 4,
+      "sha256": "7aa5b7d56cc0179e1190834d325c653849d517c072bb40e5b3a88f5faac24c68",
+      "dependsOn": [
+        "rfq_line",
+        "vendor_quotation"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "none",
+      "embeds": []
+    },
+    {
+      "resource": "customer_address",
+      "module": "core",
+      "resourceVersion": 1,
+      "file": "data/010-core/customer_address.ndjson",
+      "schema": "schema/core.customer_address.v1.schema.json",
+      "recordCount": 1,
+      "sha256": "5c94f248bb6c7f0dc2d7c078b662097927a445983bb77a9b1a34729ea8b9bc85",
+      "dependsOn": [
+        "customer"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "soft",
+      "embeds": []
+    },
+    {
+      "resource": "customer_contact",
+      "module": "core",
+      "resourceVersion": 1,
+      "file": "data/010-core/customer_contact.ndjson",
+      "schema": "schema/core.customer_contact.v1.schema.json",
+      "recordCount": 2,
+      "sha256": "07d5e7703e391b9bf25da66caf8c2b5d10fa6c88fa136a4269eadb2643cc7d08",
+      "dependsOn": [
+        "customer"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "soft",
+      "embeds": []
+    },
+    {
+      "resource": "vendor_address",
+      "module": "core",
+      "resourceVersion": 1,
+      "file": "data/010-core/vendor_address.ndjson",
+      "schema": "schema/core.vendor_address.v1.schema.json",
+      "recordCount": 4,
+      "sha256": "826910dad8d20a4a75324e421f7b93b8056b98912370f1905efaf5fb09470082",
+      "dependsOn": [
+        "vendor"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "soft",
+      "embeds": []
+    },
+    {
+      "resource": "vendor_contact",
+      "module": "core",
+      "resourceVersion": 1,
+      "file": "data/010-core/vendor_contact.ndjson",
+      "schema": "schema/core.vendor_contact.v1.schema.json",
+      "recordCount": 8,
+      "sha256": "4b80fca33c1239ae0b4f7b690fdd1a3d99a7a5f506ee45218375ff83fe66af58",
+      "dependsOn": [
+        "vendor"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "soft",
+      "embeds": []
+    }
+  ]
+}

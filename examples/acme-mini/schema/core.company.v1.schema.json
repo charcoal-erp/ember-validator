@@ -1,0 +1,1 @@
+{"additionalProperties":false,"properties":{"Code":{"type":"string"},"Name":{"type":"string"},"OrganizationId":{"pattern":"^organization:","type":"string"}},"required":["Code","Name","OrganizationId"],"type":"object"}

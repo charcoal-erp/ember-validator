@@ -1,0 +1,96 @@
+{
+    "type": "object",
+    "required": ["formatVersion", "bundleId", "bundleType", "profile", "createdAt", "producer", "organization", "resources"],
+    "properties": {
+        "formatVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+$" },
+        "bundleId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" },
+        "bundleType": { "enum": ["full", "subset", "delta"] },
+        "profile": { "enum": ["full", "portability", "analytics", "fixture", "subject", "migration"] },
+        "createdAt": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?Z$" },
+        "producer": {
+            "type": "object",
+            "required": ["product", "version"],
+            "properties": {
+                "product": { "type": "string" },
+                "version": { "type": "string" },
+                "instance": { "type": "string" },
+                "deploymentMode": { "enum": ["saas", "on_premise"] }
+            }
+        },
+        "organization": {
+            "type": "object",
+            "required": ["id", "code", "companies"],
+            "properties": {
+                "id": { "type": "string" },
+                "code": { "type": "string" },
+                "legalName": { "type": "string" },
+                "locale": { "type": "string" },
+                "timezone": { "type": "string" },
+                "baseCurrency": { "type": "string" },
+                "financialYearStart": { "type": "string" },
+                "companies": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "required": ["id", "code", "name"],
+                        "properties": {
+                            "id": { "type": "string" },
+                            "code": { "type": "string" },
+                            "name": { "type": "string" }
+                        }
+                    }
+                }
+            }
+        },
+        "consistency": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": ["database", "snapshotAt", "isolation"],
+                "properties": {
+                    "database": { "type": "string" },
+                    "snapshotLsn": { "type": ["string", "null"] },
+                    "snapshotTxid": { "type": ["string", "null"] },
+                    "snapshotAt": { "type": "string" },
+                    "isolation": { "type": "string" }
+                }
+            }
+        },
+        "options": { "type": "object" },
+        "resources": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": ["resource", "module", "resourceVersion", "file", "schema", "recordCount", "sha256", "dependsOn"],
+                "properties": {
+                    "resource": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+                    "module": { "type": "string" },
+                    "resourceVersion": { "type": "integer" },
+                    "file": { "type": "string", "pattern": "^data/" },
+                    "schema": { "type": "string", "pattern": "^schema/" },
+                    "recordCount": { "type": "integer" },
+                    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+                    "dependsOn": { "type": "array", "items": { "type": "string" } },
+                    "contentClass": { "enum": ["business", "audit", "control"] },
+                    "scope": { "type": "object" },
+                    "embeds": { "type": "array", "items": { "type": "string" } },
+                    "sideTables": { "type": "object" },
+                    "deleteSemantics": { "enum": ["soft", "hard", "none"] },
+                    "restoreOrder": { "enum": ["late"] }
+                }
+            }
+        },
+        "blobs": {
+            "type": "object",
+            "required": ["count", "bytes", "index"],
+            "properties": {
+                "count": { "type": "integer" },
+                "bytes": { "type": "integer" },
+                "index": { "type": "string" }
+            }
+        },
+        "controls": { "type": "object" },
+        "totals": { "type": "object" },
+        "chain": { "type": "object" }
+    }
+}

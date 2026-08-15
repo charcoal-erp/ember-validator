@@ -1,0 +1,5 @@
+SupplierCode,SupplierName,LegalName,City,StateCode,Country,PaymentTerms,CreditDays,CreditLimit,GSTIN,PAN,Website,Active
+SUP-1001,Hindustan Polymers,Hindustan Polymers Limited,Pune,MH,IN,Net30,30,500000.00,27AABCH1234M1Z5,AABCH1234M,https://hindustanpolymers.example.com,Y
+SUP-1002,Coastal Packaging,Coastal Packaging LLP,Kochi,KL,IN,Net45,45,250000.00,32AACFC5678K1Z9,AACFC5678K,https://coastalpack.example.com,Y
+SUP-1003,Nilgiri Solvents,Nilgiri Solvents Pvt Ltd,Coimbatore,TN,IN,Net15,15,125000.00,33AAECN9012P1ZB,AAECN9012P,,Y
+SUP-1004,Deccan Fasteners,Deccan Fasteners & Tools,Hyderabad,TG,IN,Advance,0,0.00,,ABLPD3456Q,https://deccanfast.example.com,N

@@ -1,0 +1,6 @@
+ContactRef,SupplierCode,Salutation,GivenName,FamilyName,Designation,EmailAddress,Mobile,Kind,Primary
+CON-5001,SUP-1001,Mr,Arun,Deshpande,Sales Head,arun.deshpande@hindustanpolymers.example.com,+919812345601,Primary,Y
+CON-5002,SUP-1001,Ms,Fatima,Sheikh,Accounts,fatima.sheikh@hindustanpolymers.example.com,+919812345602,Accounts,N
+CON-5003,SUP-1002,Mr,Joseph,Mathew,Proprietor,joseph.mathew@coastalpack.example.com,+919812345603,Primary,Y
+CON-5004,SUP-1003,Dr,Lakshmi,Raman,Quality,lakshmi.raman@nilgirisolvents.example.com,,Primary,Y
+CON-5005,SUP-1004,Mr,Vikas,Rathore,Owner,,+919812345605,Primary,Y

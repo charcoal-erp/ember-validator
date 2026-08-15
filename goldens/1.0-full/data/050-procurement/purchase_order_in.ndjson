@@ -1,0 +1,1 @@
+{"$audit":{"CreatedAt":"2026-08-11T17:55:06.110591","UpdatedAt":"2026-08-11T17:55:06.110591"},"$id":"purchase_order_in:3f73365c-6bdc-4702-8b1f-0788eb75b0e5","$v":1,"GSTType":"IntraState","PlaceOfSupply":null,"PurchaseOrderId":"procurement_purchase_order:01f681d8-c571-44e3-a169-6a55ad51fcca","ReverseCharge":false,"VendorGSTIN":null}

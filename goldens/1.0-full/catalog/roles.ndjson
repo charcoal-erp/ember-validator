@@ -1,0 +1,69 @@
+{"$id":"role:00270e03-07a6-4a0e-91d3-e84f3fff3859","IsDefaultRole":false,"Name":"ProductionSupervisor","OrganizationId":null}
+{"$id":"role:00d1fc91-21e7-411a-8cdc-16fdb34a8804","IsDefaultRole":false,"Name":"FinanceExecutive","OrganizationId":null}
+{"$id":"role:023d2270-4abb-49da-846a-306ac94b7e29","IsDefaultRole":false,"Name":"WarehouseManager","OrganizationId":null}
+{"$id":"role:05c8981b-c59e-4bfb-8cfa-8eb2697ec5a7","IsDefaultRole":true,"Name":"Maintenance Manager","OrganizationId":"e0331845-3f93-483f-97a0-be7683d9452c"}
+{"$id":"role:066a7a82-de89-47e6-a3b2-c6c361053202","IsDefaultRole":false,"Name":"SystemAdmin","OrganizationId":null}
+{"$id":"role:06a66749-2496-45aa-99f9-6b9cc81c78a4","IsDefaultRole":false,"Name":"StoreKeeper","OrganizationId":null}
+{"$id":"role:0879d21a-98e4-47a8-9216-af2be3204000","IsDefaultRole":true,"Name":"Company Admin","OrganizationId":"e0331845-3f93-483f-97a0-be7683d9452c"}
+{"$id":"role:103f7d61-1742-419b-9d98-b7083bbce4db","IsDefaultRole":true,"Name":"Plant Manager","OrganizationId":"e0331845-3f93-483f-97a0-be7683d9452c"}
+{"$id":"role:137b8710-61d4-4a37-8168-57bd6bab4099","IsDefaultRole":true,"Name":"Procurement Head","OrganizationId":"e0331845-3f93-483f-97a0-be7683d9452c"}
+{"$id":"role:16b1d05d-246e-4c70-8c54-40c35559ad89","IsDefaultRole":true,"Name":"System User","OrganizationId":"e0331845-3f93-483f-97a0-be7683d9452c"}
+{"$id":"role:17a98142-a3a3-477b-8006-6c074b4d82fa","IsDefaultRole":true,"Name":"Inventory Manager","OrganizationId":"e0331845-3f93-483f-97a0-be7683d9452c"}
+{"$id":"role:1953b414-d059-4db6-ba2f-308f740bc3b4","IsDefaultRole":false,"Name":"Maintenance Planner","OrganizationId":"e14400c4-2897-4ad3-a47e-295f2a38e285"}
+{"$id":"role:1b06632c-6543-457b-9d0f-8b125c1f1c70","IsDefaultRole":true,"Name":"Sales Head","OrganizationId":"e0331845-3f93-483f-97a0-be7683d9452c"}
+{"$id":"role:1b4d3f22-80da-4764-ab5e-a5a91eadd89a","IsDefaultRole":false,"Name":"ProcurementExecutive","OrganizationId":null}
+{"$id":"role:1b7afde9-c161-4610-8f1a-6d43cced70f9","IsDefaultRole":false,"Name":"ProductionManager","OrganizationId":null}
+{"$id":"role:262f9c31-ddd6-4942-8245-e2cd75ed78ef","IsDefaultRole":false,"Name":"ServiceEngineer","OrganizationId":null}
+{"$id":"role:2668e680-e748-4182-b794-43aefdcb2a1d","IsDefaultRole":true,"Name":"Procurement Manager","OrganizationId":"e0331845-3f93-483f-97a0-be7683d9452c"}
+{"$id":"role:2a6201be-f9cc-4275-a4cb-eea57b0f8a62","IsDefaultRole":false,"Name":"VendorRep","OrganizationId":null}
+{"$id":"role:2e992f1c-2f71-4f4d-94bf-b93342354338","IsDefaultRole":false,"Name":"Sales Rep","OrganizationId":"e14400c4-2897-4ad3-a47e-295f2a38e285"}
+{"$id":"role:2f9b5b7c-eb52-4308-8bf3-347cdf17580b","IsDefaultRole":true,"Name":"External Accountant","OrganizationId":"e0331845-3f93-483f-97a0-be7683d9452c"}
+{"$id":"role:325fb1e1-ecc0-4889-971d-272ea8960e00","IsDefaultRole":false,"Name":"ProductionPlanner","OrganizationId":null}
+{"$id":"role:3de525f9-0c44-499f-a8f4-82bac74e8812","IsDefaultRole":false,"Name":"ManufacturingExecutive","OrganizationId":null}
+{"$id":"role:512af437-7373-4daf-89f5-7ad5c4c42a3b","IsDefaultRole":false,"Name":"LineSupervisor","OrganizationId":null}
+{"$id":"role:5696e7e7-6caa-4476-a4c6-4b02d24ff3a5","IsDefaultRole":false,"Name":"Quality Inspector","OrganizationId":"e14400c4-2897-4ad3-a47e-295f2a38e285"}
+{"$id":"role:59d5e976-f9a1-4a78-bcc3-b99f3feee6d9","IsDefaultRole":true,"Name":"Employee","OrganizationId":"e0331845-3f93-483f-97a0-be7683d9452c"}
+{"$id":"role:64daa0af-a5bf-47d0-8e2b-59b5083613fa","IsDefaultRole":true,"Name":"HR Manager","OrganizationId":"e0331845-3f93-483f-97a0-be7683d9452c"}
+{"$id":"role:65b97659-237a-4624-aa0f-4046b7960934","IsDefaultRole":true,"Name":"Manufacturing Head","OrganizationId":"e0331845-3f93-483f-97a0-be7683d9452c"}
+{"$id":"role:67a97660-6e4f-4b4c-9c7e-1424740a449a","IsDefaultRole":true,"Name":"Base User","OrganizationId":"e0331845-3f93-483f-97a0-be7683d9452c"}
+{"$id":"role:7088f6eb-b2d9-4ae5-8049-879f5446451c","IsDefaultRole":false,"Name":"Shop-Floor Operator","OrganizationId":"e14400c4-2897-4ad3-a47e-295f2a38e285"}
+{"$id":"role:72221df2-a969-4e56-b98d-58ef9f816977","IsDefaultRole":false,"Name":"MaterialSupplierRep","OrganizationId":null}
+{"$id":"role:7761fa13-1d4b-40ee-a776-5fafa837a8aa","IsDefaultRole":false,"Name":"Viewer","OrganizationId":"e14400c4-2897-4ad3-a47e-295f2a38e285"}
+{"$id":"role:7b70708e-b4c3-4a81-aa6f-000374e0d20a","IsDefaultRole":false,"Name":"MaintenancePlanner","OrganizationId":null}
+{"$id":"role:7c47239b-a6a5-4952-92a4-a588faf34247","IsDefaultRole":false,"Name":"Quality Manager","OrganizationId":"e14400c4-2897-4ad3-a47e-295f2a38e285"}
+{"$id":"role:821d1d69-3f20-42d4-b5e4-ae90d85577e3","IsDefaultRole":false,"Name":"Production Planner","OrganizationId":"e14400c4-2897-4ad3-a47e-295f2a38e285"}
+{"$id":"role:882a34c7-7f92-4f14-b3db-50489556e297","IsDefaultRole":false,"Name":"QualityManager","OrganizationId":null}
+{"$id":"role:8848a409-73ab-44e6-b039-3b5312b5dc97","IsDefaultRole":false,"Name":"QualityEngineer","OrganizationId":null}
+{"$id":"role:8cc140b4-6964-42f5-94a3-35cd733223fa","IsDefaultRole":false,"Name":"Approver","OrganizationId":"e14400c4-2897-4ad3-a47e-295f2a38e285"}
+{"$id":"role:8e79d9d3-81e8-430b-9fb1-3cf43c694237","IsDefaultRole":true,"Name":"HR Head","OrganizationId":"e0331845-3f93-483f-97a0-be7683d9452c"}
+{"$id":"role:9331b54b-c246-40dc-a35e-93c4932588c0","IsDefaultRole":false,"Name":"MaintenanceTechnician","OrganizationId":null}
+{"$id":"role:94fb4dc8-6502-41a2-bb68-6459c408d36e","IsDefaultRole":false,"Name":"MachineOperator","OrganizationId":null}
+{"$id":"role:97b665e5-956c-4efb-84f6-c0b99f8b0944","IsDefaultRole":false,"Name":"MaterialHandler","OrganizationId":null}
+{"$id":"role:9dc69bb4-a103-4072-954b-119551af5194","IsDefaultRole":false,"Name":"ServiceManager","OrganizationId":null}
+{"$id":"role:a1ce851d-ad2d-4df4-a836-3cb9010fdfc2","IsDefaultRole":true,"Name":"Organization Owner","OrganizationId":"e0331845-3f93-483f-97a0-be7683d9452c"}
+{"$id":"role:a950491c-45dc-4c61-9d9e-033de81d1793","IsDefaultRole":false,"Name":"DesignEngineer","OrganizationId":null}
+{"$id":"role:a968ae71-a898-4b5a-80f6-e519e2882669","IsDefaultRole":true,"Name":"Sales Manager","OrganizationId":"e0331845-3f93-483f-97a0-be7683d9452c"}
+{"$id":"role:ab75f4ab-8c3e-41a1-85fe-e03b5f9001c6","IsDefaultRole":true,"Name":"Organization Admin","OrganizationId":"e0331845-3f93-483f-97a0-be7683d9452c"}
+{"$id":"role:abd986da-fc87-4092-b586-f6493cf36a23","IsDefaultRole":false,"Name":"ClientRep","OrganizationId":null}
+{"$id":"role:acb037bb-d8b0-4b71-9d0d-14c070ab20de","IsDefaultRole":false,"Name":"ProjectManager","OrganizationId":null}
+{"$id":"role:b29dfcf7-7bfb-428c-aae7-a2c1bdc46974","IsDefaultRole":false,"Name":"CustomerServiceManager","OrganizationId":null}
+{"$id":"role:b9209ffb-0415-4ebe-bcbf-d9255565013c","IsDefaultRole":true,"Name":"Plant Department Manager","OrganizationId":"e0331845-3f93-483f-97a0-be7683d9452c"}
+{"$id":"role:be1b2ccc-ba33-4da4-b035-e2ae4ba0f0ad","IsDefaultRole":false,"Name":"ProductDevelopmentEngineer","OrganizationId":null}
+{"$id":"role:c2f75984-9751-478a-853b-a5c31d2582d7","IsDefaultRole":true,"Name":"CRM Manager","OrganizationId":"e0331845-3f93-483f-97a0-be7683d9452c"}
+{"$id":"role:cb849553-87ad-450c-a71f-e675240bd654","IsDefaultRole":true,"Name":"System Admin","OrganizationId":"e0331845-3f93-483f-97a0-be7683d9452c"}
+{"$id":"role:ce044c07-b38d-405a-aad2-ffba2c536193","IsDefaultRole":true,"Name":"Asset Manager","OrganizationId":"e0331845-3f93-483f-97a0-be7683d9452c"}
+{"$id":"role:d2fddc5d-1108-4b99-83c8-459639e85f2c","IsDefaultRole":true,"Name":"Accounting Manager","OrganizationId":"e0331845-3f93-483f-97a0-be7683d9452c"}
+{"$id":"role:d96453b5-4c45-4379-a215-19bec9af807c","IsDefaultRole":false,"Name":"DesignManager","OrganizationId":null}
+{"$id":"role:da58a605-be7f-4916-b9e0-a59b55ffe830","IsDefaultRole":false,"Name":"PlantManager","OrganizationId":null}
+{"$id":"role:db1a20a9-ad21-4bf3-acab-3ed9462b5dc4","IsDefaultRole":false,"Name":"LineOperator","OrganizationId":null}
+{"$id":"role:dd917c89-3530-478b-9aeb-68160a7c7264","IsDefaultRole":true,"Name":"Inventory Head","OrganizationId":"e0331845-3f93-483f-97a0-be7683d9452c"}
+{"$id":"role:e0ae8600-b49c-4898-af8a-e5a2f60abc48","IsDefaultRole":true,"Name":"Customer Contact","OrganizationId":"e0331845-3f93-483f-97a0-be7683d9452c"}
+{"$id":"role:e4c1f2ba-5375-4e24-b3e7-e5b75e488fd1","IsDefaultRole":false,"Name":"ShopFloorOperator","OrganizationId":null}
+{"$id":"role:e549ee53-ec51-408e-8de0-c7dc60e05a7f","IsDefaultRole":true,"Name":"Marketing Head","OrganizationId":"e0331845-3f93-483f-97a0-be7683d9452c"}
+{"$id":"role:e7bf9272-fdea-43c9-9001-44eddd0d7025","IsDefaultRole":false,"Name":"QualityInspector","OrganizationId":null}
+{"$id":"role:e7fd4f30-ba0e-45e2-9cbe-689e69877b15","IsDefaultRole":false,"Name":"OperationsExecutive","OrganizationId":null}
+{"$id":"role:f01a4219-4579-4be1-bd0f-2f9836b23452","IsDefaultRole":false,"Name":"CostAccountant","OrganizationId":null}
+{"$id":"role:f03bb471-7dc8-48d8-89dc-b2ab2802ccfc","IsDefaultRole":false,"Name":"Payroll Manager","OrganizationId":null}
+{"$id":"role:f15c8ccd-7b91-46af-a229-cbec0b68ce43","IsDefaultRole":true,"Name":"Marketing Manager","OrganizationId":"e0331845-3f93-483f-97a0-be7683d9452c"}
+{"$id":"role:f371140b-a0b0-4393-b5b5-1fc6c8c0a4fe","IsDefaultRole":true,"Name":"Accounting Head","OrganizationId":"e0331845-3f93-483f-97a0-be7683d9452c"}
+{"$id":"role:f4fe5855-2157-42fb-b242-f680dfe8bff8","IsDefaultRole":true,"Name":"Vendor Contact","OrganizationId":"e0331845-3f93-483f-97a0-be7683d9452c"}

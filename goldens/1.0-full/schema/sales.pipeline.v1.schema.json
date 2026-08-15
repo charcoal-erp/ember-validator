@@ -1,0 +1,1 @@
+{"additionalProperties":false,"properties":{"CompanyId":{"pattern":"^company:","type":["string","null"]},"Currency":{"type":"string"},"Description":{"type":["string","null"]},"IsActive":{"type":"boolean"},"IsDefault":{"type":"boolean"},"Name":{"type":"string"},"OrganizationId":{"pattern":"^organization:","type":["string","null"]}},"required":["Name"],"type":"object"}

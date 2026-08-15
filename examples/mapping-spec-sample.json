@@ -1,0 +1,1993 @@
+{
+  "specVersion": "1.0",
+  "runId": "0193f2a3-0000-7000-8000-000000000001",
+  "version": 1,
+  "sourceSystem": "tally-prime",
+  "entities": [
+    {
+      "id": "ent_party",
+      "target": "Party",
+      "enabled": true,
+      "dependsOn": [],
+      "sources": [
+        {
+          "sheet": "Sheet12",
+          "role": "supplier",
+          "nameColumn": "Party Name",
+          "gstinColumn": "Party GSTN No",
+          "panColumn": "Party Pan No",
+          "priority": 1
+        },
+        {
+          "sheet": "Sales report for TBGT",
+          "role": "customer",
+          "nameColumn": "Party Name",
+          "gstinColumn": "GSTN NO",
+          "panColumn": "Pan No",
+          "priority": 2
+        },
+        {
+          "sheet": "Purchase Register",
+          "role": "supplier",
+          "nameColumn": "Account1_Name",
+          "priority": 3
+        },
+        {
+          "sheet": "Sales Register",
+          "role": "customer",
+          "nameColumn": "Account1_Name",
+          "priority": 3
+        },
+        {
+          "sheet": "All GRN Report",
+          "role": "supplier",
+          "nameColumn": "Supplier Name",
+          "priority": 4
+        },
+        {
+          "sheet": "All Po Reports",
+          "role": "supplier",
+          "nameColumn": "Supplier Name",
+          "priority": 4
+        },
+        {
+          "sheet": "App Po Approval Report",
+          "role": "supplier",
+          "nameColumn": "Supplier Name",
+          "priority": 4
+        }
+      ],
+      "structure": {
+        "headerRow": "perSheet",
+        "rowFilters": [
+          {
+            "type": "dropAllEmpty"
+          },
+          {
+            "type": "dropSentinel",
+            "pattern": "^\\s*(report\\s+)?(grand\\s+)?total\\s*$",
+            "scanColumns": [
+              0,
+              1,
+              2,
+              3
+            ]
+          }
+        ],
+        "derivedColumns": [
+          {
+            "name": "name_norm",
+            "type": "expression",
+            "expression": "regexReplace(upper(trim($nameColumn)), '[^A-Z0-9]', '')"
+          }
+        ],
+        "unionAcrossSources": true,
+        "unionKey": "name_norm",
+        "unionMerge": {
+          "roles": "union",
+          "gstin": "firstNonNull",
+          "pan": "firstNonNull"
+        }
+      },
+      "fields": [
+        {
+          "targetPath": "legalName",
+          "required": true,
+          "source": {
+            "kind": "column",
+            "column": "$nameColumn"
+          },
+          "transforms": [
+            {
+              "op": "trim"
+            },
+            {
+              "op": "collapseWhitespace"
+            }
+          ],
+          "policy": "preserve"
+        },
+        {
+          "targetPath": "roles",
+          "required": true,
+          "source": {
+            "kind": "expression",
+            "expression": "unionOfSourceRoles()"
+          },
+          "comment": "19 parties resolve to BOTH customer and supplier. One record, two roles."
+        },
+        {
+          "targetPath": "gstin",
+          "required": false,
+          "source": {
+            "kind": "column",
+            "column": "$gstinColumn"
+          },
+          "transforms": [
+            {
+              "op": "normaliseGstin"
+            },
+            {
+              "op": "assertRange",
+              "args": {
+                "length": 15
+              }
+            }
+          ]
+        },
+        {
+          "targetPath": "pan",
+          "required": false,
+          "source": {
+            "kind": "column",
+            "column": "$panColumn"
+          },
+          "transforms": [
+            {
+              "op": "upper"
+            },
+            {
+              "op": "trim"
+            }
+          ]
+        },
+        {
+          "targetPath": "placeOfSupply",
+          "required": true,
+          "source": {
+            "kind": "column",
+            "column": "$gstinColumn"
+          },
+          "transforms": [
+            {
+              "op": "gstinStateCode"
+            },
+            {
+              "op": "defaultTo",
+              "args": {
+                "value": "27"
+              }
+            }
+          ],
+          "comment": "27 = Maharashtra, the company's own state. 417 of 432 populated GSTINs are 27; 13 are 24 (Gujarat), 1 is 09 (UP), 1 is 23 (MP)."
+        },
+        {
+          "targetPath": "isExport",
+          "required": false,
+          "source": {
+            "kind": "expression",
+            "expression": "isNull($gstinColumn) AND appearsIn('Sales report for TBGT') AND saleHead == 'EXPORT SALE'"
+          }
+        },
+        {
+          "targetPath": "currency",
+          "required": true,
+          "source": {
+            "kind": "expression",
+            "expression": "isExport ? 'USD' : 'INR'"
+          },
+          "comment": "SONNAX invoices are export sales with no GSTIN. Confirm currency with the customer \u2014 the workbook does not state it."
+        },
+        {
+          "targetPath": "legacyReferences[]",
+          "required": false,
+          "source": {
+            "kind": "expression",
+            "expression": "[{namespace:'anand.legacy.party', value: $nameColumn}]"
+          }
+        }
+      ],
+      "identity": {
+        "naturalKey": [
+          "name_norm"
+        ],
+        "matchStrategy": [
+          {
+            "on": "gstin",
+            "method": "exact",
+            "decisive": true
+          },
+          {
+            "on": "pan",
+            "method": "exact",
+            "decisive": false
+          },
+          {
+            "on": "legalName",
+            "method": "fuzzy",
+            "threshold": 0.92,
+            "decisive": false
+          }
+        ],
+        "onExisting": "update",
+        "legacyCodeNamespace": "anand.legacy.party"
+      },
+      "policy": {
+        "posture": "posting",
+        "onValidationError": "quarantine",
+        "batchSize": 250,
+        "createMissingMasters": true
+      },
+      "expected": {
+        "records": 249,
+        "customers": 23,
+        "suppliers": 245,
+        "dualRole": 19,
+        "withGstin": 80
+      },
+      "manualReview": [
+        "SONNAX TRANSMISSION COMPANY vs SONNAX TRANSMISSION COMPANY CR \u2014 merge or keep separate?",
+        "INHOUSE PRODUCTION is not a party; it is an internal production cost centre. Reclassify to a Department/Cost Centre before load.",
+        "169 parties have no GSTIN \u2014 confirm each is genuinely unregistered/composition or supply the missing identifiers."
+      ]
+    },
+    {
+      "id": "ent_item",
+      "target": "Item",
+      "enabled": true,
+      "dependsOn": [
+        "ent_uom"
+      ],
+      "sources": [
+        {
+          "sheet": "Branch Wise Sales",
+          "codeColumn": "Product_Code",
+          "nameColumn": "Product_Name",
+          "priority": 1
+        },
+        {
+          "sheet": "Department Wise sales",
+          "codeColumn": "Product_Code",
+          "nameColumn": "Product_Name",
+          "priority": 1
+        },
+        {
+          "sheet": "Party Wise Sales",
+          "codeColumn": "Product_Code",
+          "nameColumn": "Product_Name",
+          "priority": 1
+        },
+        {
+          "sheet": "Sales report for TBGT",
+          "nameColumn": "Product Name",
+          "hsnColumn": "HSN NO",
+          "uomColumn": "UNITS",
+          "priority": 2
+        },
+        {
+          "sheet": "Sales Register",
+          "nameColumn": "ProductName",
+          "priority": 3
+        },
+        {
+          "sheet": "Purchase Register",
+          "nameColumn": "ProductName",
+          "priority": 3
+        },
+        {
+          "sheet": "All GRN Report",
+          "nameColumn": "Product Name",
+          "priority": 4
+        },
+        {
+          "sheet": "All Po Reports",
+          "nameColumn": "Product Name",
+          "priority": 4
+        },
+        {
+          "sheet": "App Po Approval Report",
+          "nameColumn": "Product Name",
+          "priority": 4
+        },
+        {
+          "sheet": "Sheet12",
+          "nameColumn": "Product Name",
+          "priority": 4
+        }
+      ],
+      "structure": {
+        "headerRow": "perSheet",
+        "rowFilters": [
+          {
+            "type": "dropAllEmpty"
+          },
+          {
+            "type": "dropSentinel",
+            "pattern": "^\\s*(report\\s+)?(grand\\s+)?total\\s*$",
+            "scanColumns": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "type": "dropBandHeader",
+            "keyColumns": [
+              0
+            ],
+            "labelColumn": 1,
+            "appliesTo": [
+              "Branch Wise Sales",
+              "Department Wise sales",
+              "Party Wise Sales",
+              "Produect Wise Sales"
+            ]
+          },
+          {
+            "type": "rejoinContinuation",
+            "textColumn": 0,
+            "joinInto": "Product Name",
+            "separator": " ",
+            "appliesTo": [
+              "App Po Approval Report"
+            ]
+          }
+        ],
+        "derivedColumns": [
+          {
+            "name": "band",
+            "type": "forwardFill",
+            "from": "bandHeader",
+            "labelColumn": 1
+          },
+          {
+            "name": "name_norm",
+            "type": "expression",
+            "expression": "regexReplace(upper(trim($nameColumn)), '[^A-Z0-9]', '')"
+          }
+        ],
+        "unionAcrossSources": true,
+        "unionKey": "name_norm"
+      },
+      "fields": [
+        {
+          "targetPath": "name",
+          "required": true,
+          "source": {
+            "kind": "column",
+            "column": "$nameColumn"
+          },
+          "transforms": [
+            {
+              "op": "trim"
+            },
+            {
+              "op": "collapseWhitespace"
+            }
+          ]
+        },
+        {
+          "targetPath": "code",
+          "required": false,
+          "source": {
+            "kind": "column",
+            "column": "$codeColumn"
+          },
+          "comment": "Only 260 of 1,528 items carry a code. The rest must be created code-less or given a generated code."
+        },
+        {
+          "targetPath": "itemType",
+          "required": true,
+          "source": {
+            "kind": "lookup",
+            "column": "$codeColumn",
+            "valueMapId": "vm_item_type"
+          },
+          "transforms": [
+            {
+              "op": "defaultTo",
+              "args": {
+                "value": "unclassified"
+              }
+            }
+          ]
+        },
+        {
+          "targetPath": "hsnCode",
+          "required": false,
+          "source": {
+            "kind": "column",
+            "column": "$hsnColumn"
+          },
+          "transforms": [
+            {
+              "op": "regexReplace",
+              "args": {
+                "find": "^NONE$",
+                "replace": ""
+              }
+            },
+            {
+              "op": "hsnValidate"
+            }
+          ],
+          "comment": "Only 89 of 1,528 items appear on the sole HSN-bearing tab; 77 carry a real HSN and 12 say literally 'NONE'. That is 5%% coverage. HSN is mandatory for GST invoicing \u2014 this MUST come from the customer."
+        },
+        {
+          "targetPath": "uomId",
+          "required": true,
+          "source": {
+            "kind": "lookup",
+            "column": "$uomColumn",
+            "valueMapId": "vm_uom"
+          },
+          "transforms": [
+            {
+              "op": "defaultTo",
+              "args": {
+                "value": "NOS"
+              }
+            }
+          ],
+          "comment": "UOM present for only 89 of 1,528 items. Default to NOS and flag."
+        },
+        {
+          "targetPath": "defaultStoreId",
+          "required": false,
+          "source": {
+            "kind": "lookup",
+            "column": "band",
+            "valueMapId": "vm_store"
+          }
+        },
+        {
+          "targetPath": "legacyReferences[]",
+          "required": false,
+          "source": {
+            "kind": "expression",
+            "expression": "[{namespace:'anand.legacy.item', value: $codeColumn}]"
+          }
+        }
+      ],
+      "identity": {
+        "naturalKey": [
+          "name_norm"
+        ],
+        "matchStrategy": [
+          {
+            "on": "code",
+            "method": "exact",
+            "decisive": true
+          },
+          {
+            "on": "name",
+            "method": "normalized",
+            "decisive": true
+          }
+        ],
+        "onExisting": "update",
+        "legacyCodeNamespace": "anand.legacy.item"
+      },
+      "policy": {
+        "posture": "posting",
+        "onValidationError": "quarantine",
+        "batchSize": 500,
+        "createMissingMasters": false
+      },
+      "expected": {
+        "records": 1528,
+        "withCode": 260,
+        "withHsn": 77,
+        "withUom": 89
+      },
+      "manualReview": [
+        "1,268 items have no legacy code \u2014 confirm whether the source system truly has none or whether the code column was omitted from these reports.",
+        "597 item names are \u226530 characters and may be truncated by the legacy report writer.",
+        "HSN/SAC is effectively absent. Blocking for GST invoicing."
+      ]
+    },
+    {
+      "id": "ent_sales_invoice",
+      "target": "SalesInvoice",
+      "enabled": true,
+      "dependsOn": [
+        "ent_party",
+        "ent_item",
+        "ent_tax_rate",
+        "ent_store"
+      ],
+      "sources": [
+        {
+          "sheet": "Sales Register"
+        },
+        {
+          "sheet": "Sales report for TBGT",
+          "role": "enrichment",
+          "joinOn": {
+            "source": "VoucherNo",
+            "target": "Invoice No"
+          }
+        }
+      ],
+      "structure": {
+        "headerRow": 2,
+        "rowFilters": [
+          {
+            "type": "dropAllEmpty"
+          },
+          {
+            "type": "dropSentinel",
+            "pattern": "^\\s*(report\\s+)?(grand\\s+)?total\\s*$",
+            "scanColumns": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "type": "keepWhere",
+            "expression": "vch.doctype IN ('EXI','RDE','STB')",
+            "comment": "ONLY these three series are tax invoices. The other nine series in this tab are goods movements and go to ent_delivery_challan."
+          }
+        ],
+        "derivedColumns": [
+          {
+            "name": "vch",
+            "type": "decompose",
+            "column": "VoucherNo",
+            "pattern": "^(?P<doctype>[A-Z]{3})-(?:(?P<series>[A-Z]{2}\\d{2})-)?(?P<branch>[A-Z]{1,2})-(?P<serial>.+)$",
+            "emit": [
+              "doctype",
+              "series",
+              "branch",
+              "serial"
+            ],
+            "onNoMatch": "quarantine"
+          }
+        ],
+        "grouping": {
+          "key": [
+            "VoucherNo"
+          ],
+          "shape": "headerAndLines",
+          "headerFields": [
+            "Date",
+            "Account1_Name",
+            "vch.doctype",
+            "vch.branch"
+          ],
+          "lineFields": [
+            "ProductName",
+            "Quantity",
+            "Rate",
+            "Value",
+            "Taxable Amount",
+            "SGST",
+            "CGST",
+            "IGST",
+            "SGST Amount",
+            "CGST Amount",
+            "IGST Amount"
+          ],
+          "onHeaderConflict": "error"
+        }
+      },
+      "fields": [
+        {
+          "targetPath": "header.documentDate",
+          "required": true,
+          "source": {
+            "kind": "column",
+            "column": "Date"
+          },
+          "transforms": [
+            {
+              "op": "parseDate",
+              "args": {
+                "format": "YYYY-MM-DD"
+              }
+            }
+          ]
+        },
+        {
+          "targetPath": "header.legacyDocumentNo",
+          "required": true,
+          "source": {
+            "kind": "column",
+            "column": "VoucherNo"
+          }
+        },
+        {
+          "targetPath": "header.documentType",
+          "required": true,
+          "source": {
+            "kind": "lookup",
+            "column": "vch.doctype",
+            "valueMapId": "vm_sales_doctype"
+          }
+        },
+        {
+          "targetPath": "header.division",
+          "required": true,
+          "source": {
+            "kind": "lookup",
+            "column": "vch.branch",
+            "valueMapId": "vm_division"
+          }
+        },
+        {
+          "targetPath": "header.series",
+          "required": false,
+          "source": {
+            "kind": "column",
+            "column": "vch.series"
+          }
+        },
+        {
+          "targetPath": "header.partyId",
+          "required": true,
+          "source": {
+            "kind": "lookup",
+            "column": "Account1_Name",
+            "valueMapId": "vm_party"
+          }
+        },
+        {
+          "targetPath": "header.placeOfSupply",
+          "required": true,
+          "source": {
+            "kind": "expression",
+            "expression": "IGST > 0 ? partyStateCode() : '27'"
+          }
+        },
+        {
+          "targetPath": "header.currency",
+          "required": true,
+          "source": {
+            "kind": "expression",
+            "expression": "saleHead == 'EXPORT SALE' ? 'USD' : 'INR'"
+          }
+        },
+        {
+          "targetPath": "header.roundOff",
+          "required": false,
+          "source": {
+            "kind": "column",
+            "column": "ROff"
+          },
+          "policy": "preserve"
+        },
+        {
+          "targetPath": "header.totalAmount",
+          "required": true,
+          "source": {
+            "kind": "column",
+            "column": "Invoice Amount"
+          },
+          "policy": "preserve"
+        },
+        {
+          "targetPath": "lines[].itemId",
+          "required": true,
+          "source": {
+            "kind": "lookup",
+            "column": "ProductName",
+            "valueMapId": "vm_item"
+          }
+        },
+        {
+          "targetPath": "lines[].quantity",
+          "required": true,
+          "source": {
+            "kind": "column",
+            "column": "Quantity"
+          },
+          "transforms": [
+            {
+              "op": "toNumber"
+            }
+          ]
+        },
+        {
+          "targetPath": "lines[].unitPrice",
+          "required": true,
+          "source": {
+            "kind": "columns",
+            "columns": [
+              "Rate",
+              "InvRate"
+            ]
+          },
+          "transforms": [
+            {
+              "op": "coalesce"
+            },
+            {
+              "op": "assertRange",
+              "args": {
+                "min": 0,
+                "max": 10000000
+              }
+            }
+          ]
+        },
+        {
+          "targetPath": "lines[].taxableValue",
+          "required": true,
+          "source": {
+            "kind": "column",
+            "column": "Taxable Amount"
+          },
+          "policy": "preserve"
+        },
+        {
+          "targetPath": "lines[].cgstRate",
+          "required": false,
+          "source": {
+            "kind": "column",
+            "column": "CGST"
+          },
+          "transforms": [
+            {
+              "op": "assertRange",
+              "args": {
+                "min": 0,
+                "max": 30,
+                "onFail": "quarantine"
+              }
+            }
+          ],
+          "comment": "THE CRITICAL GUARD. One row carries 16,200,000 in this column, which inflates the SGST/CGST control total by Rs 2,91,60,000 (155x)."
+        },
+        {
+          "targetPath": "lines[].sgstRate",
+          "required": false,
+          "source": {
+            "kind": "column",
+            "column": "SGST"
+          },
+          "transforms": [
+            {
+              "op": "assertRange",
+              "args": {
+                "min": 0,
+                "max": 30,
+                "onFail": "quarantine"
+              }
+            }
+          ]
+        },
+        {
+          "targetPath": "lines[].igstRate",
+          "required": false,
+          "source": {
+            "kind": "column",
+            "column": "IGST"
+          },
+          "transforms": [
+            {
+              "op": "assertRange",
+              "args": {
+                "min": 0,
+                "max": 30,
+                "onFail": "quarantine"
+              }
+            }
+          ]
+        },
+        {
+          "targetPath": "lines[].cgstAmount",
+          "required": false,
+          "source": {
+            "kind": "column",
+            "column": "CGST Amount"
+          },
+          "policy": "preserveAndFlag"
+        },
+        {
+          "targetPath": "lines[].sgstAmount",
+          "required": false,
+          "source": {
+            "kind": "column",
+            "column": "SGST Amount"
+          },
+          "policy": "preserveAndFlag"
+        },
+        {
+          "targetPath": "lines[].igstAmount",
+          "required": false,
+          "source": {
+            "kind": "column",
+            "column": "IGST Amount"
+          },
+          "policy": "preserveAndFlag"
+        },
+        {
+          "targetPath": "lines[].hsnCode",
+          "required": true,
+          "source": {
+            "kind": "crossSheet",
+            "sheet": "Sales report for TBGT",
+            "onSource": "ProductName",
+            "onTarget": "Product Name",
+            "take": "HSN NO"
+          },
+          "comment": "HSN exists only on the TBGT tab. Covers 77 of 1,528 items \u2014 5%%."
+        }
+      ],
+      "identity": {
+        "naturalKey": [
+          "header.legacyDocumentNo"
+        ],
+        "matchStrategy": [
+          {
+            "on": "legacyDocumentNo",
+            "method": "exact",
+            "decisive": true
+          }
+        ],
+        "onExisting": "skip",
+        "legacyCodeNamespace": "anand.legacy.voucher"
+      },
+      "policy": {
+        "posture": "posting",
+        "onValidationError": "quarantine",
+        "batchSize": 100,
+        "createMissingMasters": false,
+        "openDocumentQuantity": "remaining"
+      },
+      "expected": {
+        "vouchers": 20,
+        "lines": 133,
+        "note": "EXI 10 vouchers / 108 lines, RDE 1/15, STB 9/10"
+      },
+      "controlTotals": [
+        {
+          "control": "sales.taxable_value",
+          "legacyValue": 76262596.82,
+          "source": "Report Total row, 'Taxable Amount' column",
+          "tolerance": 1.0,
+          "warning": "This total INCLUDES the 974 non-invoice movement lines. Compare against the delivery-challan entity plus this one, not this one alone."
+        },
+        {
+          "control": "sales.sgst_amount",
+          "legacyValue": 189126.65,
+          "source": "Report Total 29,349,126.65 MINUS the 29,160,000 corrupt-row contribution",
+          "tolerance": 1.0
+        },
+        {
+          "control": "sales.igst_amount",
+          "legacyValue": 13065393.01,
+          "source": "Report Total row",
+          "tolerance": 1.0
+        }
+      ]
+    },
+    {
+      "id": "ent_delivery_challan",
+      "target": "DeliveryChallan",
+      "enabled": true,
+      "dependsOn": [
+        "ent_party",
+        "ent_item",
+        "ent_store"
+      ],
+      "sources": [
+        {
+          "sheet": "Sales Register"
+        }
+      ],
+      "structure": {
+        "headerRow": 2,
+        "rowFilters": [
+          {
+            "type": "dropAllEmpty"
+          },
+          {
+            "type": "dropSentinel",
+            "pattern": "^\\s*(report\\s+)?(grand\\s+)?total\\s*$",
+            "scanColumns": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "type": "keepWhere",
+            "expression": "vch.doctype IN ('DCL','PPI','RIP','ILP','CPE','RDC','IPC','OSE','COA')"
+          }
+        ],
+        "derivedColumns": [
+          {
+            "name": "vch",
+            "type": "decompose",
+            "column": "VoucherNo",
+            "pattern": "^(?P<doctype>[A-Z]{3})-(?:(?P<series>[A-Z]{2}\\d{2})-)?(?P<branch>[A-Z]{1,2})-(?P<serial>.+)$",
+            "emit": [
+              "doctype",
+              "series",
+              "branch",
+              "serial"
+            ],
+            "onNoMatch": "quarantine"
+          }
+        ],
+        "grouping": {
+          "key": [
+            "VoucherNo"
+          ],
+          "shape": "headerAndLines",
+          "headerFields": [
+            "Date",
+            "Account1_Name",
+            "vch.doctype",
+            "vch.branch"
+          ],
+          "lineFields": [
+            "ProductName",
+            "Quantity"
+          ],
+          "onHeaderConflict": "first"
+        }
+      },
+      "fields": [
+        {
+          "targetPath": "header.documentDate",
+          "required": true,
+          "source": {
+            "kind": "column",
+            "column": "Date"
+          },
+          "transforms": [
+            {
+              "op": "parseDate",
+              "args": {
+                "format": "YYYY-MM-DD"
+              }
+            }
+          ]
+        },
+        {
+          "targetPath": "header.legacyDocumentNo",
+          "required": true,
+          "source": {
+            "kind": "column",
+            "column": "VoucherNo"
+          }
+        },
+        {
+          "targetPath": "header.movementType",
+          "required": true,
+          "source": {
+            "kind": "lookup",
+            "column": "vch.doctype",
+            "valueMapId": "vm_movement_type"
+          }
+        },
+        {
+          "targetPath": "header.partyId",
+          "required": true,
+          "source": {
+            "kind": "lookup",
+            "column": "Account1_Name",
+            "valueMapId": "vm_party"
+          }
+        },
+        {
+          "targetPath": "lines[].itemId",
+          "required": true,
+          "source": {
+            "kind": "lookup",
+            "column": "ProductName",
+            "valueMapId": "vm_item"
+          }
+        },
+        {
+          "targetPath": "lines[].quantity",
+          "required": true,
+          "source": {
+            "kind": "column",
+            "column": "Quantity"
+          },
+          "transforms": [
+            {
+              "op": "toNumber"
+            }
+          ]
+        }
+      ],
+      "identity": {
+        "naturalKey": [
+          "header.legacyDocumentNo"
+        ],
+        "matchStrategy": [
+          {
+            "on": "legacyDocumentNo",
+            "method": "exact",
+            "decisive": true
+          }
+        ],
+        "onExisting": "skip"
+      },
+      "policy": {
+        "posture": "non_posting",
+        "onValidationError": "quarantine",
+        "batchSize": 200,
+        "createMissingMasters": false
+      },
+      "expected": {
+        "vouchers": 337,
+        "lines": 974
+      },
+      "comment": "These 974 lines have quantity but no price. They are stock movements \u2014 job-work issues, inter-plant transfers, rate-difference and delivery challans. They must NOT create revenue."
+    },
+    {
+      "id": "ent_purchase_invoice",
+      "target": "PurchaseInvoice",
+      "enabled": true,
+      "dependsOn": [
+        "ent_party",
+        "ent_item",
+        "ent_account",
+        "ent_grn"
+      ],
+      "sources": [
+        {
+          "sheet": "Sheet12",
+          "role": "primary",
+          "comment": "THE accounting-authoritative purchase tab. Carries GSTIN, PAN, purchase head (the COA link) and TDS. Untitled in the source."
+        },
+        {
+          "sheet": "Purchase Register",
+          "role": "secondary"
+        }
+      ],
+      "structure": {
+        "headerRow": 1,
+        "rowFilters": [
+          {
+            "type": "dropAllEmpty"
+          },
+          {
+            "type": "dropSentinel",
+            "pattern": "^\\s*(report\\s+)?(grand\\s+)?total\\s*$",
+            "scanColumns": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "type": "keepWhere",
+            "expression": "startsWith(`Posting V No`, 'PI')"
+          }
+        ],
+        "derivedColumns": [
+          {
+            "name": "vch",
+            "type": "decompose",
+            "column": "Posting V No",
+            "pattern": "^(?P<doctype>[A-Z]{3})-(?P<branch>[A-Z])-(?P<serial>\\d+)$",
+            "emit": [
+              "doctype",
+              "branch",
+              "serial"
+            ],
+            "onNoMatch": "quarantine"
+          }
+        ],
+        "grouping": {
+          "key": [
+            "Posting V No",
+            "GST Bill No"
+          ],
+          "shape": "headerAndLines",
+          "headerFields": [
+            "Posting V Date For GST",
+            "GST Bill No",
+            "GST Bill Date",
+            "Party Name",
+            "Party GSTN No",
+            "Party Pan No"
+          ],
+          "lineFields": [
+            "Purchase Head",
+            "Product Name",
+            "Qty",
+            "RATE",
+            "Taxable Amount",
+            "C GST",
+            "S GST",
+            "I GST"
+          ],
+          "onHeaderConflict": "first"
+        }
+      },
+      "fields": [
+        {
+          "targetPath": "header.documentDate",
+          "required": true,
+          "source": {
+            "kind": "columns",
+            "columns": [
+              "GST Bill Date",
+              "Posting V Date For GST"
+            ]
+          },
+          "transforms": [
+            {
+              "op": "coalesce"
+            },
+            {
+              "op": "parseDate"
+            }
+          ],
+          "comment": "28 detail rows have no GST Bill Date. Falling back to the posting date is acceptable for migration but MUST be flagged \u2014 GST bill date drives ITC eligibility."
+        },
+        {
+          "targetPath": "header.postingDate",
+          "required": true,
+          "source": {
+            "kind": "column",
+            "column": "Posting V Date For GST"
+          },
+          "transforms": [
+            {
+              "op": "parseDate"
+            }
+          ]
+        },
+        {
+          "targetPath": "header.supplierInvoiceNo",
+          "required": true,
+          "source": {
+            "kind": "column",
+            "column": "GST Bill No"
+          },
+          "transforms": [
+            {
+              "op": "assertNotNull"
+            }
+          ],
+          "comment": "This column is NOT date-coerced, but 97 of 439 values are stored as integers, risking leading-zero loss. Request it as Text on re-export."
+        },
+        {
+          "targetPath": "header.legacyDocumentNo",
+          "required": true,
+          "source": {
+            "kind": "column",
+            "column": "Posting V No"
+          }
+        },
+        {
+          "targetPath": "header.partyId",
+          "required": true,
+          "source": {
+            "kind": "lookup",
+            "column": "Party Name",
+            "valueMapId": "vm_party"
+          }
+        },
+        {
+          "targetPath": "header.supplierGstin",
+          "required": false,
+          "source": {
+            "kind": "column",
+            "column": "Party GSTN No"
+          },
+          "transforms": [
+            {
+              "op": "normaliseGstin"
+            }
+          ]
+        },
+        {
+          "targetPath": "header.placeOfSupply",
+          "required": true,
+          "source": {
+            "kind": "column",
+            "column": "Party GSTN No"
+          },
+          "transforms": [
+            {
+              "op": "gstinStateCode"
+            },
+            {
+              "op": "defaultTo",
+              "args": {
+                "value": "27"
+              }
+            }
+          ]
+        },
+        {
+          "targetPath": "lines[].accountId",
+          "required": true,
+          "source": {
+            "kind": "lookup",
+            "column": "Purchase Head",
+            "valueMapId": "vm_purchase_head"
+          },
+          "comment": "The single most important mapping in the workbook: this is the only link between transactions and the chart of accounts."
+        },
+        {
+          "targetPath": "lines[].itemId",
+          "required": false,
+          "source": {
+            "kind": "lookup",
+            "column": "Product Name",
+            "valueMapId": "vm_item"
+          }
+        },
+        {
+          "targetPath": "lines[].quantity",
+          "required": true,
+          "source": {
+            "kind": "column",
+            "column": "Qty"
+          }
+        },
+        {
+          "targetPath": "lines[].unitPrice",
+          "required": true,
+          "source": {
+            "kind": "column",
+            "column": "RATE"
+          }
+        },
+        {
+          "targetPath": "lines[].taxableValue",
+          "required": true,
+          "source": {
+            "kind": "column",
+            "column": "Taxable Amount"
+          },
+          "policy": "preserve"
+        },
+        {
+          "targetPath": "lines[].cgstAmount",
+          "required": false,
+          "source": {
+            "kind": "column",
+            "column": "C GST"
+          }
+        },
+        {
+          "targetPath": "lines[].sgstAmount",
+          "required": false,
+          "source": {
+            "kind": "column",
+            "column": "S GST"
+          }
+        },
+        {
+          "targetPath": "lines[].igstAmount",
+          "required": false,
+          "source": {
+            "kind": "column",
+            "column": "I GST"
+          }
+        },
+        {
+          "targetPath": "header.tdsSection",
+          "required": false,
+          "source": {
+            "kind": "lookup",
+            "column": "TDS HEAD",
+            "valueMapId": "vm_tds_section"
+          }
+        },
+        {
+          "targetPath": "header.tdsRate",
+          "required": false,
+          "source": {
+            "kind": "column",
+            "column": "TDS%"
+          },
+          "transforms": [
+            {
+              "op": "abs"
+            }
+          ],
+          "comment": "Recorded negative by legacy convention (-2, -1, -10). Normalise to positive; the sign is carried by the posting direction."
+        },
+        {
+          "targetPath": "header.tdsAmount",
+          "required": false,
+          "source": {
+            "kind": "column",
+            "column": "TDS Amount"
+          },
+          "transforms": [
+            {
+              "op": "abs"
+            }
+          ]
+        },
+        {
+          "targetPath": "header.tds194qApplicable",
+          "required": false,
+          "source": {
+            "kind": "expression",
+            "expression": "isNotNull(`TDS 194Q`)"
+          }
+        }
+      ],
+      "identity": {
+        "naturalKey": [
+          "header.legacyDocumentNo",
+          "header.supplierInvoiceNo"
+        ],
+        "matchStrategy": [
+          {
+            "on": "legacyDocumentNo",
+            "method": "exact",
+            "decisive": true
+          }
+        ],
+        "onExisting": "skip"
+      },
+      "policy": {
+        "posture": "posting",
+        "onValidationError": "quarantine",
+        "batchSize": 100,
+        "createMissingMasters": false
+      },
+      "expected": {
+        "detailLines": 439,
+        "purchaseInvoiceLines": 411,
+        "purchaseInvoiceVouchers": 185,
+        "journalLines": 28,
+        "withGstin": 432,
+        "missingGstin": 7,
+        "missingBillDate": 28
+      }
+    },
+    {
+      "id": "ent_grn_pending_bill",
+      "target": "GoodsReceipt",
+      "enabled": true,
+      "dependsOn": [
+        "ent_party",
+        "ent_item"
+      ],
+      "sources": [
+        {
+          "sheet": "grn bill booking pending report"
+        }
+      ],
+      "structure": {
+        "headerRow": 1,
+        "rowFilters": [
+          {
+            "type": "dropAllEmpty"
+          },
+          {
+            "type": "dropSentinel",
+            "pattern": "^\\s*(report\\s+)?(grand\\s+)?total\\s*$",
+            "scanColumns": [
+              0,
+              1,
+              2,
+              3
+            ]
+          }
+        ]
+      },
+      "fields": [
+        {
+          "targetPath": "header.documentDate",
+          "required": true,
+          "source": {
+            "kind": "column",
+            "column": "Date"
+          },
+          "transforms": [
+            {
+              "op": "parseDate"
+            }
+          ]
+        },
+        {
+          "targetPath": "header.legacyDocumentNo",
+          "required": true,
+          "source": {
+            "kind": "column",
+            "column": "VNO"
+          }
+        },
+        {
+          "targetPath": "header.partyId",
+          "required": true,
+          "source": {
+            "kind": "lookup",
+            "column": "Party Name",
+            "valueMapId": "vm_party"
+          }
+        },
+        {
+          "targetPath": "header.billingStatus",
+          "required": true,
+          "source": {
+            "kind": "constant",
+            "value": "pending_bill"
+          }
+        },
+        {
+          "targetPath": "lines[].itemId",
+          "required": true,
+          "source": {
+            "kind": "lookup",
+            "column": "Product Name",
+            "valueMapId": "vm_item"
+          }
+        },
+        {
+          "targetPath": "lines[].receivedQuantity",
+          "required": true,
+          "source": {
+            "kind": "column",
+            "column": "GRN Qty"
+          }
+        },
+        {
+          "targetPath": "lines[].billedQuantity",
+          "required": true,
+          "source": {
+            "kind": "column",
+            "column": "ExecutedQty"
+          },
+          "transforms": [
+            {
+              "op": "defaultTo",
+              "args": {
+                "value": 0
+              }
+            }
+          ]
+        },
+        {
+          "targetPath": "lines[].pendingQuantity",
+          "required": true,
+          "source": {
+            "kind": "column",
+            "column": "Pending Qty"
+          },
+          "comment": "THE OPEN BALANCE. Import this, not GRN Qty. This is the only tab in the workbook that states an open position explicitly."
+        },
+        {
+          "targetPath": "lines[].unitPrice",
+          "required": true,
+          "source": {
+            "kind": "column",
+            "column": "Rate"
+          }
+        }
+      ],
+      "identity": {
+        "naturalKey": [
+          "header.legacyDocumentNo",
+          "lines[].itemId"
+        ],
+        "matchStrategy": [
+          {
+            "on": "legacyDocumentNo",
+            "method": "exact",
+            "decisive": true
+          }
+        ],
+        "onExisting": "skip"
+      },
+      "policy": {
+        "posture": "posting",
+        "onValidationError": "quarantine",
+        "batchSize": 50,
+        "createMissingMasters": false,
+        "openDocumentQuantity": "remaining"
+      },
+      "expected": {
+        "records": 4
+      },
+      "comment": "Only 4 open GRN-pending lines in this extract (5 non-blank rows less the Report Total). Ask the customer for the FULL pending report as at the cutover date \u2014 this one covers 9-20 April only."
+    }
+  ],
+  "valueMaps": [
+    {
+      "id": "vm_sales_doctype",
+      "kind": "documentType",
+      "sourceColumn": "vch.doctype",
+      "targetDomain": "SalesDocumentType",
+      "onUnmapped": "fail",
+      "entries": [
+        {
+          "sourceValue": "EXI",
+          "targetValue": "EXPORT_INVOICE",
+          "occurrences": 108,
+          "confidence": 94,
+          "rationale": "100% value + 100% tax + matches EXPORT SALE head on the TBGT tab; single party SONNAX"
+        },
+        {
+          "sourceValue": "RDE",
+          "targetValue": "TAX_INVOICE",
+          "occurrences": 15,
+          "confidence": 78,
+          "rationale": "100% rate and value but no tax \u2014 likely a rate-difference / debit note. CONFIRM."
+        },
+        {
+          "sourceValue": "STB",
+          "targetValue": "TAX_INVOICE",
+          "occurrences": 10,
+          "confidence": 72,
+          "rationale": "100% rate and value, no tax. Possibly scrap sale. CONFIRM."
+        },
+        {
+          "sourceValue": "DCL",
+          "targetValue": "DELIVERY_CHALLAN",
+          "occurrences": 292,
+          "confidence": 89,
+          "rationale": "Largest series; qty always present; 15 parties"
+        },
+        {
+          "sourceValue": "PPI",
+          "targetValue": "JOBWORK_ISSUE",
+          "occurrences": 170,
+          "confidence": 66,
+          "rationale": "Qty only, single party. CONFIRM with customer."
+        },
+        {
+          "sourceValue": "RIP",
+          "targetValue": "JOBWORK_RECEIPT",
+          "occurrences": 170,
+          "confidence": 66,
+          "rationale": "Mirrors PPI exactly (170/37). CONFIRM."
+        },
+        {
+          "sourceValue": "ILP",
+          "targetValue": "INTERPLANT_TRANSFER",
+          "occurrences": 139,
+          "confidence": 61,
+          "rationale": "Qty only, both divisions. CONFIRM."
+        },
+        {
+          "sourceValue": "CPE",
+          "targetValue": "STOCK_MOVEMENT",
+          "occurrences": 129,
+          "confidence": 48,
+          "rationale": "129 lines across only 2 vouchers. UNKNOWN \u2014 ask."
+        },
+        {
+          "sourceValue": "RDC",
+          "targetValue": "STOCK_MOVEMENT",
+          "occurrences": 27,
+          "confidence": 52,
+          "rationale": "7 parties, qty only. UNKNOWN \u2014 ask."
+        },
+        {
+          "sourceValue": "IPC",
+          "targetValue": "STOCK_MOVEMENT",
+          "occurrences": 16,
+          "confidence": 45,
+          "rationale": "UNKNOWN \u2014 ask."
+        },
+        {
+          "sourceValue": "OSE",
+          "targetValue": "STOCK_MOVEMENT",
+          "occurrences": 15,
+          "confidence": 45,
+          "rationale": "Single voucher, 15 lines. UNKNOWN \u2014 ask."
+        },
+        {
+          "sourceValue": "COA",
+          "targetValue": "STOCK_MOVEMENT",
+          "occurrences": 15,
+          "confidence": 45,
+          "rationale": "Single voucher, 15 lines. UNKNOWN \u2014 ask."
+        }
+      ]
+    },
+    {
+      "id": "vm_division",
+      "kind": "enum",
+      "sourceColumn": "vch.branch",
+      "targetDomain": "Division",
+      "onUnmapped": "fail",
+      "entries": [
+        {
+          "sourceValue": "C",
+          "targetValue": "COV",
+          "confidence": 92,
+          "rationale": "Stores named '... COV'; export invoice series COV/26-27/nnn"
+        },
+        {
+          "sourceValue": "H",
+          "targetValue": "HUB",
+          "confidence": 92,
+          "rationale": "Stores named '... HUB'; export invoice series HUB/26-27/nnn"
+        },
+        {
+          "sourceValue": "BF25",
+          "targetValue": null,
+          "action": "quarantine",
+          "confidence": 30,
+          "rationale": "NOT a branch. Appears in position 2 of PCA-BF25-C-221, i.e. it is a SERIES token, not a branch. The decomposition regex handles this \u2014 verify no BF25 rows reach this map."
+        }
+      ]
+    },
+    {
+      "id": "vm_uom",
+      "kind": "uom",
+      "sourceColumn": "UNITS",
+      "targetDomain": "UnitOfMeasure",
+      "onUnmapped": "createNew",
+      "entries": [
+        {
+          "sourceValue": "Nos",
+          "targetValue": "NOS",
+          "occurrences": 126,
+          "confidence": 99
+        },
+        {
+          "sourceValue": "NOS",
+          "targetValue": "NOS",
+          "occurrences": 1,
+          "confidence": 99,
+          "rationale": "Case variant of the same unit \u2014 must collapse to one"
+        },
+        {
+          "sourceValue": "KGS",
+          "targetValue": "KG",
+          "occurrences": 11,
+          "confidence": 97
+        },
+        {
+          "sourceValue": "LTR",
+          "targetValue": "L",
+          "occurrences": 6,
+          "confidence": 96
+        }
+      ]
+    },
+    {
+      "id": "vm_purchase_head",
+      "kind": "account",
+      "sourceColumn": "Purchase Head",
+      "targetDomain": "ChartOfAccounts",
+      "onUnmapped": "fail",
+      "entries": [
+        {
+          "sourceValue": "RD PACKING MATERIAL PURCHASE",
+          "targetValue": "5110 Packing Material Consumed",
+          "occurrences": 112,
+          "confidence": 93
+        },
+        {
+          "sourceValue": "RD STORE AND CONSUMABLE PURCHASE",
+          "targetValue": "5120 Stores & Consumables",
+          "occurrences": 75,
+          "confidence": 93
+        },
+        {
+          "sourceValue": "RD JOBWORK CHARGES",
+          "targetValue": "5210 Job Work Charges",
+          "occurrences": 58,
+          "confidence": 95
+        },
+        {
+          "sourceValue": "RD REPAIR AND MAINTANANCE MACHINERY MATERIAL",
+          "targetValue": "5310 Repairs & Maintenance - Machinery (Material)",
+          "occurrences": 49,
+          "confidence": 91,
+          "rationale": "Legacy spelling 'MAINTANANCE' preserved as a legacy alias"
+        },
+        {
+          "sourceValue": "RD LABOUR CHARGES",
+          "targetValue": "5220 Contract Labour Charges",
+          "occurrences": 43,
+          "confidence": 90
+        },
+        {
+          "sourceValue": "RD  RAW MATERIAL PURCHASE",
+          "targetValue": "5010 Raw Material Purchases",
+          "occurrences": 35,
+          "confidence": 96,
+          "rationale": "Note the DOUBLE SPACE in the source value \u2014 match on the exact string"
+        },
+        {
+          "sourceValue": "BANK CHARGES EXPENSES",
+          "targetValue": "6410 Bank Charges",
+          "occurrences": 26,
+          "confidence": 97
+        },
+        {
+          "sourceValue": "TRANSPOTATION EXPENSES OUTWARD",
+          "targetValue": "6210 Freight Outward",
+          "occurrences": 16,
+          "confidence": 92
+        },
+        {
+          "sourceValue": "CAPITAL WORK IN PROGRESS",
+          "targetValue": "1510 Capital Work in Progress",
+          "occurrences": 8,
+          "confidence": 95,
+          "rationale": "BALANCE SHEET item, not an expense. Must not hit P&L."
+        },
+        {
+          "sourceValue": "RD REPAIR AND MAINTANANCE MACHINERY SERVICES",
+          "targetValue": "5320 Repairs & Maintenance - Machinery (Services)",
+          "occurrences": 5,
+          "confidence": 90
+        },
+        {
+          "sourceValue": "OUTSIDE LABOUR CHARGES",
+          "targetValue": "5230 Outside Labour Charges",
+          "occurrences": 4,
+          "confidence": 88
+        },
+        {
+          "sourceValue": "TRANSPOTATION EXPENSES INWARD",
+          "targetValue": "5410 Freight Inward",
+          "occurrences": 2,
+          "confidence": 92
+        },
+        {
+          "sourceValue": "RD PRINTING AND STATIONERY",
+          "targetValue": "6310 Printing & Stationery",
+          "occurrences": 2,
+          "confidence": 94
+        },
+        {
+          "sourceValue": "CANTEEN EXPENSES",
+          "targetValue": "6510 Staff Welfare - Canteen",
+          "occurrences": 1,
+          "confidence": 89
+        },
+        {
+          "sourceValue": "URD LABOUR CHARGES",
+          "targetValue": "5240 Labour Charges - Unregistered Dealer",
+          "occurrences": 1,
+          "confidence": 84,
+          "rationale": "URD = Unregistered Dealer. Reverse-charge GST implications."
+        },
+        {
+          "sourceValue": "TRANSIT INSURANCE",
+          "targetValue": "6220 Transit Insurance",
+          "occurrences": 1,
+          "confidence": 93
+        },
+        {
+          "sourceValue": "PROFESSIONAL FEES",
+          "targetValue": "6110 Professional Fees",
+          "occurrences": 1,
+          "confidence": 96
+        }
+      ],
+      "note": "Target account codes are PROPOSED. They must be reconciled against the customer's actual chart of accounts, which is NOT present in this workbook."
+    },
+    {
+      "id": "vm_sale_head",
+      "kind": "account",
+      "sourceColumn": "Sale Head",
+      "targetDomain": "ChartOfAccounts",
+      "onUnmapped": "fail",
+      "entries": [
+        {
+          "sourceValue": "EXPORT SALE",
+          "targetValue": "4010 Export Sales",
+          "occurrences": 123,
+          "confidence": 97
+        },
+        {
+          "sourceValue": "SCRAP SALE",
+          "targetValue": "4030 Scrap Sales",
+          "occurrences": 11,
+          "confidence": 96
+        },
+        {
+          "sourceValue": "WIP SALE",
+          "targetValue": "4020 WIP / Semi-finished Sales",
+          "occurrences": 10,
+          "confidence": 88
+        }
+      ]
+    },
+    {
+      "id": "vm_store",
+      "kind": "store",
+      "sourceColumn": "band",
+      "targetDomain": "Store",
+      "onUnmapped": "createNew",
+      "entries": [
+        {
+          "sourceValue": "FINISHED GOODS COV",
+          "targetValue": "FG-COV",
+          "confidence": 96
+        },
+        {
+          "sourceValue": "FINISHED GOODS HUB",
+          "targetValue": "FG-HUB",
+          "confidence": 96
+        },
+        {
+          "sourceValue": "RAW MATERAIL COV",
+          "targetValue": "RM-COV",
+          "confidence": 94,
+          "rationale": "Legacy misspelling 'MATERAIL' retained as an alias"
+        },
+        {
+          "sourceValue": "RAW MATERAIL HUB",
+          "targetValue": "RM-HUB",
+          "confidence": 94
+        },
+        {
+          "sourceValue": "STORE CONSUMABLE COV",
+          "targetValue": "CONS-COV",
+          "confidence": 93
+        },
+        {
+          "sourceValue": "STORE CONSUMABLE HUB",
+          "targetValue": "CONS-HUB",
+          "confidence": 93
+        },
+        {
+          "sourceValue": "STORE TOOLING AND INSERT COV",
+          "targetValue": "TOOL-COV",
+          "confidence": 92
+        },
+        {
+          "sourceValue": "QUALITY MATERIAL COV",
+          "targetValue": "QC-COV",
+          "confidence": 90
+        },
+        {
+          "sourceValue": "WIP-VENDOR/INHOUSE COV",
+          "targetValue": "WIP-COV",
+          "confidence": 88
+        },
+        {
+          "sourceValue": "WIP-VENDOR/INHOUSE HUB",
+          "targetValue": "WIP-HUB",
+          "confidence": 88
+        },
+        {
+          "sourceValue": "TOOLING RESHARPNING",
+          "targetValue": "TOOL-RESHARP",
+          "confidence": 85,
+          "rationale": "No division suffix \u2014 confirm which division"
+        },
+        {
+          "sourceValue": "NONE",
+          "targetValue": null,
+          "action": "null",
+          "confidence": 99,
+          "rationale": "Sentinel placeholder, not a store"
+        }
+      ]
+    },
+    {
+      "id": "vm_item_type",
+      "kind": "enum",
+      "sourceColumn": "Product_Code",
+      "targetDomain": "ItemType",
+      "onUnmapped": "null",
+      "matchMode": "prefix",
+      "entries": [
+        {
+          "sourceValue": "FGCV",
+          "targetValue": "FINISHED_GOOD",
+          "occurrences": 121,
+          "confidence": 95,
+          "rationale": "FG + COV division"
+        },
+        {
+          "sourceValue": "FGHB",
+          "targetValue": "FINISHED_GOOD",
+          "occurrences": 49,
+          "confidence": 95
+        },
+        {
+          "sourceValue": "FG",
+          "targetValue": "FINISHED_GOOD",
+          "occurrences": 4,
+          "confidence": 90
+        },
+        {
+          "sourceValue": "CONO",
+          "targetValue": "CONSUMABLE",
+          "occurrences": 26,
+          "confidence": 88
+        },
+        {
+          "sourceValue": "CONB",
+          "targetValue": "CONSUMABLE",
+          "occurrences": 4,
+          "confidence": 85
+        },
+        {
+          "sourceValue": "HRMSLT",
+          "targetValue": "RAW_MATERIAL",
+          "occurrences": 15,
+          "confidence": 84,
+          "rationale": "HUB raw material, sheet/plate"
+        },
+        {
+          "sourceValue": "RMFO",
+          "targetValue": "RAW_MATERIAL",
+          "occurrences": 14,
+          "confidence": 86,
+          "rationale": "RM forging"
+        },
+        {
+          "sourceValue": "RMAL",
+          "targetValue": "RAW_MATERIAL",
+          "occurrences": 6,
+          "confidence": 86,
+          "rationale": "RM aluminium"
+        },
+        {
+          "sourceValue": "HRMSP",
+          "targetValue": "RAW_MATERIAL",
+          "occurrences": 5,
+          "confidence": 82
+        },
+        {
+          "sourceValue": "HRMFR",
+          "targetValue": "RAW_MATERIAL",
+          "occurrences": 3,
+          "confidence": 82
+        },
+        {
+          "sourceValue": "RMYO",
+          "targetValue": "RAW_MATERIAL",
+          "occurrences": 3,
+          "confidence": 82,
+          "rationale": "RM yoke"
+        }
+      ]
+    },
+    {
+      "id": "vm_tds_section",
+      "kind": "enum",
+      "sourceColumn": "TDS%",
+      "targetDomain": "TdsSection",
+      "onUnmapped": "null",
+      "entries": [
+        {
+          "sourceValue": "-1",
+          "targetValue": "194C",
+          "occurrences": 63,
+          "confidence": 88,
+          "rationale": "1% \u2014 contractor payment to a company"
+        },
+        {
+          "sourceValue": "-2",
+          "targetValue": "194C",
+          "occurrences": 68,
+          "confidence": 86,
+          "rationale": "2% \u2014 contractor, non-individual"
+        },
+        {
+          "sourceValue": "-10",
+          "targetValue": "194J",
+          "occurrences": 1,
+          "confidence": 90,
+          "rationale": "10% \u2014 professional/technical fees"
+        }
+      ],
+      "note": "Section is INFERRED from the rate. The workbook's 'TDS HEAD' column is entirely empty. Confirm every section with the customer's accountant."
+    }
+  ]
+}

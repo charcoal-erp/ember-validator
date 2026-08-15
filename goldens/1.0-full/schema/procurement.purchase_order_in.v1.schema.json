@@ -1,0 +1,1 @@
+{"additionalProperties":false,"properties":{"GSTType":{"type":["string","null"]},"PlaceOfSupply":{"type":["string","null"]},"PurchaseOrderId":{"pattern":"^procurement_purchase_order:","type":"string"},"ReverseCharge":{"type":"boolean"},"VendorGSTIN":{"type":["string","null"]}},"required":["PurchaseOrderId"],"type":"object"}

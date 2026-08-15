@@ -1,0 +1,997 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://charcoal.erp/schemas/mapping-spec-1.0.json",
+    "type": "object",
+    "required": [
+        "specVersion",
+        "runId",
+        "version",
+        "entities"
+    ],
+    "additionalProperties": false,
+    "properties": {
+        "specVersion": {
+            "const": "1.0"
+        },
+        "runId": {
+            "type": "string",
+            "format": "uuid"
+        },
+        "version": {
+            "type": "integer",
+            "minimum": 1
+        },
+        "sourceSystem": {
+            "type": "string"
+        },
+        "basedOnTemplate": {
+            "type": "string"
+        },
+        "entities": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "$ref": "#/$defs/entityMapping"
+            }
+        },
+        "valueMaps": {
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/valueMap"
+            }
+        },
+        "controlTotals": {
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/controlTotal"
+            }
+        },
+        "createdBy": {
+            "enum": [
+                "ai",
+                "human",
+                "template"
+            ]
+        },
+        "aiProvenance": {
+            "$ref": "#/$defs/aiProvenance"
+        }
+    },
+    "$defs": {
+        "entityMapping": {
+            "type": "object",
+            "required": [
+                "id",
+                "target",
+                "sources",
+                "structure",
+                "fields",
+                "identity"
+            ],
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "pattern": "^ent_[a-z0-9_]+$"
+                },
+                "target": {
+                    "enum": [
+                        "Party",
+                        "Item",
+                        "Account",
+                        "TaxRate",
+                        "UnitOfMeasure",
+                        "Store",
+                        "Department",
+                        "VoucherSeries",
+                        "OpeningBalance",
+                        "OpeningStock",
+                        "PurchaseOrder",
+                        "GoodsReceipt",
+                        "PurchaseInvoice",
+                        "SalesOrder",
+                        "DeliveryChallan",
+                        "SalesInvoice",
+                        "SalesReturn",
+                        "Journal",
+                        "Attachment"
+                    ]
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "sources": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "$ref": "#/$defs/sourceBinding"
+                    }
+                },
+                "dependsOn": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "structure": {
+                    "$ref": "#/$defs/structureSpec"
+                },
+                "fields": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/fieldMapping"
+                    }
+                },
+                "identity": {
+                    "$ref": "#/$defs/identitySpec"
+                },
+                "policy": {
+                    "$ref": "#/$defs/entityPolicy"
+                },
+                "expected": {
+                    "type": "object"
+                },
+                "manualReview": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "comment": {
+                    "type": "string"
+                },
+                "controlTotals": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/controlTotal"
+                    }
+                }
+            }
+        },
+        "sourceBinding": {
+            "type": "object",
+            "required": [
+                "sheet"
+            ],
+            "properties": {
+                "sheet": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "priority": {
+                    "type": "integer"
+                },
+                "regionIndex": {
+                    "type": "integer"
+                },
+                "rowFilter": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/rowFilter"
+                    }
+                },
+                "joinOn": {
+                    "type": "object",
+                    "required": [
+                        "source",
+                        "target"
+                    ],
+                    "properties": {
+                        "source": {
+                            "type": "string"
+                        },
+                        "target": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "structureSpec": {
+            "type": "object",
+            "properties": {
+                "headerRow": {
+                    "oneOf": [
+                        {
+                            "type": "integer",
+                            "minimum": 0
+                        },
+                        {
+                            "const": "perSheet"
+                        }
+                    ]
+                },
+                "unionAcrossSources": {
+                    "type": "boolean"
+                },
+                "unionKey": {
+                    "type": "string"
+                },
+                "unionMerge": {
+                    "type": "object"
+                },
+                "rowFilters": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/rowFilter"
+                    }
+                },
+                "derivedColumns": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/derivedColumn"
+                    }
+                },
+                "grouping": {
+                    "$ref": "#/$defs/groupingSpec"
+                },
+                "unpivot": {
+                    "type": "object"
+                }
+            }
+        },
+        "rowFilter": {
+            "oneOf": [
+                {
+                    "type": "object",
+                    "required": [
+                        "type"
+                    ],
+                    "properties": {
+                        "type": {
+                            "const": "dropAllEmpty"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "type",
+                        "pattern",
+                        "scanColumns"
+                    ],
+                    "properties": {
+                        "type": {
+                            "const": "dropSentinel"
+                        },
+                        "pattern": {
+                            "type": "string"
+                        },
+                        "scanColumns": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "type",
+                        "keyColumns",
+                        "labelColumn"
+                    ],
+                    "properties": {
+                        "type": {
+                            "const": "dropBandHeader"
+                        },
+                        "keyColumns": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        "labelColumn": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "type",
+                        "requireEmpty",
+                        "requireFilled"
+                    ],
+                    "properties": {
+                        "type": {
+                            "const": "dropSubtotal"
+                        },
+                        "requireEmpty": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        "requireFilled": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "type",
+                        "textColumn",
+                        "joinInto",
+                        "separator"
+                    ],
+                    "properties": {
+                        "type": {
+                            "const": "rejoinContinuation"
+                        },
+                        "textColumn": {
+                            "type": "integer"
+                        },
+                        "joinInto": {
+                            "type": "string"
+                        },
+                        "separator": {
+                            "type": "string"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "type",
+                        "expression"
+                    ],
+                    "properties": {
+                        "type": {
+                            "const": "keepWhere"
+                        },
+                        "expression": {
+                            "type": "string"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "type",
+                        "expression"
+                    ],
+                    "properties": {
+                        "type": {
+                            "const": "dropWhere"
+                        },
+                        "expression": {
+                            "type": "string"
+                        }
+                    }
+                }
+            ]
+        },
+        "derivedColumn": {
+            "oneOf": [
+                {
+                    "type": "object",
+                    "required": [
+                        "name",
+                        "type",
+                        "column",
+                        "pattern",
+                        "emit",
+                        "onNoMatch"
+                    ],
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "type": {
+                            "const": "decompose"
+                        },
+                        "column": {
+                            "type": "string"
+                        },
+                        "pattern": {
+                            "type": "string"
+                        },
+                        "emit": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "onNoMatch": {
+                            "enum": [
+                                "quarantine",
+                                "null",
+                                "passthrough"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "name",
+                        "type",
+                        "from",
+                        "labelColumn"
+                    ],
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "type": {
+                            "const": "forwardFill"
+                        },
+                        "from": {
+                            "const": "bandHeader"
+                        },
+                        "labelColumn": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "name",
+                        "type",
+                        "expression"
+                    ],
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "type": {
+                            "const": "expression"
+                        },
+                        "expression": {
+                            "type": "string"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "name",
+                        "type",
+                        "scope"
+                    ],
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "type": {
+                            "const": "rowNumber"
+                        },
+                        "scope": {
+                            "enum": [
+                                "sheet",
+                                "group"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        "groupingSpec": {
+            "type": "object",
+            "required": [
+                "key",
+                "shape"
+            ],
+            "properties": {
+                "key": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "shape": {
+                    "enum": [
+                        "flat",
+                        "headerAndLines"
+                    ]
+                },
+                "headerFields": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "lineFields": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "onHeaderConflict": {
+                    "enum": [
+                        "first",
+                        "last",
+                        "mostFrequent",
+                        "error"
+                    ]
+                }
+            }
+        },
+        "fieldMapping": {
+            "type": "object",
+            "required": [
+                "targetPath",
+                "source"
+            ],
+            "additionalProperties": false,
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "targetPath": {
+                    "type": "string"
+                },
+                "required": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "source": {
+                    "$ref": "#/$defs/fieldSource"
+                },
+                "transforms": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/transformStep"
+                    }
+                },
+                "policy": {
+                    "enum": [
+                        "preserve",
+                        "recompute",
+                        "preserveAndFlag",
+                        "recomputeAndReconcile"
+                    ]
+                },
+                "confidence": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100
+                },
+                "rationale": {
+                    "type": "string",
+                    "maxLength": 500
+                },
+                "origin": {
+                    "enum": [
+                        "ai",
+                        "human",
+                        "template",
+                        "alias",
+                        "exact"
+                    ]
+                },
+                "reviewed": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "comment": {
+                    "type": "string"
+                }
+            }
+        },
+        "fieldSource": {
+            "oneOf": [
+                {
+                    "type": "object",
+                    "required": [
+                        "kind",
+                        "column"
+                    ],
+                    "properties": {
+                        "kind": {
+                            "const": "column"
+                        },
+                        "column": {
+                            "type": "string"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "kind",
+                        "columns"
+                    ],
+                    "properties": {
+                        "kind": {
+                            "const": "columns"
+                        },
+                        "columns": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "kind",
+                        "column"
+                    ],
+                    "properties": {
+                        "kind": {
+                            "const": "derived"
+                        },
+                        "column": {
+                            "type": "string"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "kind",
+                        "value"
+                    ],
+                    "properties": {
+                        "kind": {
+                            "const": "constant"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "kind",
+                        "expression"
+                    ],
+                    "properties": {
+                        "kind": {
+                            "const": "expression"
+                        },
+                        "expression": {
+                            "type": "string"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "kind",
+                        "column",
+                        "valueMapId"
+                    ],
+                    "properties": {
+                        "kind": {
+                            "const": "lookup"
+                        },
+                        "column": {
+                            "type": "string"
+                        },
+                        "valueMapId": {
+                            "type": "string"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "kind",
+                        "sheet",
+                        "onSource",
+                        "onTarget",
+                        "take"
+                    ],
+                    "properties": {
+                        "kind": {
+                            "const": "crossSheet"
+                        },
+                        "sheet": {
+                            "type": "string"
+                        },
+                        "onSource": {
+                            "type": "string"
+                        },
+                        "onTarget": {
+                            "type": "string"
+                        },
+                        "take": {
+                            "type": "string"
+                        }
+                    }
+                },
+                {
+                    "type": "object",
+                    "required": [
+                        "kind"
+                    ],
+                    "properties": {
+                        "kind": {
+                            "const": "none"
+                        }
+                    }
+                }
+            ]
+        },
+        "transformStep": {
+            "type": "object",
+            "required": [
+                "op"
+            ],
+            "properties": {
+                "op": {
+                    "enum": [
+                        "trim",
+                        "collapseWhitespace",
+                        "upper",
+                        "lower",
+                        "titleCase",
+                        "regexReplace",
+                        "padLeft",
+                        "substring",
+                        "concat",
+                        "split",
+                        "toNumber",
+                        "abs",
+                        "negate",
+                        "round",
+                        "scale",
+                        "percentOf",
+                        "sum",
+                        "coalesce",
+                        "parseDate",
+                        "formatDate",
+                        "financialYear",
+                        "endOfMonth",
+                        "shiftYear",
+                        "forwardFill",
+                        "rejoinContinuation",
+                        "unpivot",
+                        "decompose",
+                        "constant",
+                        "rowNumber",
+                        "lookupMaster",
+                        "lookupEnum",
+                        "fuzzyMatch",
+                        "crossSheetJoin",
+                        "normaliseGstin",
+                        "gstinStateCode",
+                        "derivePlaceOfSupply",
+                        "panFromGstin",
+                        "deriveTaxTreatment",
+                        "hsnValidate",
+                        "recomputeGst",
+                        "assertRange",
+                        "assertNotNull",
+                        "defaultTo",
+                        "quarantineIf"
+                    ]
+                },
+                "args": {
+                    "type": "object"
+                }
+            }
+        },
+        "identitySpec": {
+            "type": "object",
+            "required": [
+                "naturalKey",
+                "matchStrategy",
+                "onExisting"
+            ],
+            "properties": {
+                "naturalKey": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "matchStrategy": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/matchRule"
+                    }
+                },
+                "onExisting": {
+                    "enum": [
+                        "skip",
+                        "update",
+                        "fail",
+                        "createDuplicate"
+                    ]
+                },
+                "legacyCodeNamespace": {
+                    "type": "string"
+                }
+            }
+        },
+        "matchRule": {
+            "type": "object",
+            "required": [
+                "on",
+                "method",
+                "decisive"
+            ],
+            "properties": {
+                "on": {
+                    "type": "string"
+                },
+                "method": {
+                    "enum": [
+                        "exact",
+                        "normalized",
+                        "fuzzy"
+                    ]
+                },
+                "threshold": {
+                    "type": "number"
+                },
+                "decisive": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "entityPolicy": {
+            "type": "object",
+            "properties": {
+                "posture": {
+                    "enum": [
+                        "posting",
+                        "non_posting"
+                    ]
+                },
+                "onValidationError": {
+                    "enum": [
+                        "quarantine",
+                        "loadWithWarning"
+                    ]
+                },
+                "batchSize": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "createMissingMasters": {
+                    "type": "boolean"
+                },
+                "openDocumentQuantity": {
+                    "enum": [
+                        "original",
+                        "remaining"
+                    ]
+                }
+            }
+        },
+        "valueMap": {
+            "type": "object",
+            "required": [
+                "id",
+                "kind",
+                "sourceColumn",
+                "targetDomain",
+                "entries",
+                "onUnmapped"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "kind": {
+                    "enum": [
+                        "enum",
+                        "master",
+                        "account",
+                        "uom",
+                        "taxRate",
+                        "documentType",
+                        "store"
+                    ]
+                },
+                "sourceColumn": {
+                    "type": "string"
+                },
+                "targetDomain": {
+                    "type": "string"
+                },
+                "entries": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/valueMapEntry"
+                    }
+                },
+                "onUnmapped": {
+                    "enum": [
+                        "fail",
+                        "null",
+                        "createNew",
+                        "quarantine"
+                    ]
+                }
+            }
+        },
+        "valueMapEntry": {
+            "type": "object",
+            "required": [
+                "sourceValue",
+                "targetValue"
+            ],
+            "properties": {
+                "sourceValue": {
+                    "type": "string"
+                },
+                "targetValue": {
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "targetId": {
+                    "type": "string"
+                },
+                "action": {
+                    "enum": [
+                        "map",
+                        "createNew",
+                        "null",
+                        "quarantine"
+                    ],
+                    "default": "map"
+                },
+                "occurrences": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "confidence": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100
+                },
+                "rationale": {
+                    "type": "string"
+                },
+                "origin": {
+                    "enum": [
+                        "ai",
+                        "human",
+                        "template"
+                    ],
+                    "default": "ai"
+                },
+                "reviewed": {
+                    "type": "boolean",
+                    "default": false
+                }
+            }
+        },
+        "controlTotal": {
+            "type": "object",
+            "required": [
+                "control",
+                "legacyValue"
+            ],
+            "properties": {
+                "control": {
+                    "type": "string"
+                },
+                "legacyValue": {
+                    "type": "number"
+                },
+                "source": {
+                    "type": "string"
+                },
+                "tolerance": {
+                    "type": "number",
+                    "minimum": 0
+                },
+                "warning": {
+                    "type": "string"
+                }
+            }
+        },
+        "aiProvenance": {
+            "type": "object"
+        }
+    },
+    "$comment": "Schema for a MappingSpec: the declarative description of how a source system's columns become Ember records, used by `ember-validate lint <mapping-spec.json>`. Formalized from a working dialect rather than designed up front, so a few properties are deliberately permissive where no real example yet exists to narrow them against."
+}

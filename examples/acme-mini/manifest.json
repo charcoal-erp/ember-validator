@@ -1,0 +1,111 @@
+{
+  "formatVersion": "1.0",
+  "bundleId": "01930f2a-3b41-4c8e-9f12-6d5a4b3c2e10",
+  "bundleType": "full",
+  "profile": "full",
+  "createdAt": "2026-08-01T10:45:00Z",
+  "producer": {
+    "product": "handwritten-example",
+    "version": "0.0.0"
+  },
+  "organization": {
+    "id": "11111111-1111-4111-8111-111111111111",
+    "code": "acme",
+    "legalName": "Acme Industries Pvt Ltd",
+    "timezone": "Asia/Kolkata",
+    "baseCurrency": "INR",
+    "companies": [
+      {
+        "id": "22222222-2222-4222-8222-222222222201",
+        "code": "ACME-ENG",
+        "name": "Acme Engineering"
+      },
+      {
+        "id": "22222222-2222-4222-8222-222222222202",
+        "code": "ACME-PHARMA",
+        "name": "Acme Pharma"
+      }
+    ]
+  },
+  "options": {
+    "sourceTimezone": "Asia/Kolkata",
+    "blobsIncluded": true,
+    "credentialsIncluded": false
+  },
+  "resources": [
+    {
+      "resource": "organization",
+      "module": "core",
+      "resourceVersion": 1,
+      "file": "data/010-core/organization.ndjson",
+      "schema": "schema/core.organization.v1.schema.json",
+      "recordCount": 1,
+      "sha256": "50bf5b405c622ac4b438a590fa2f4f8d3fd0b15d1e297b30faa78a3320bacd28",
+      "dependsOn": [],
+      "contentClass": "business",
+      "deleteSemantics": "soft"
+    },
+    {
+      "resource": "company",
+      "module": "core",
+      "resourceVersion": 1,
+      "file": "data/010-core/company.ndjson",
+      "schema": "schema/core.company.v1.schema.json",
+      "recordCount": 2,
+      "sha256": "6cafc7f9614b60ce63d86c0d59630209c24e1ad22d1a86e322581d0cfb0ee43d",
+      "dependsOn": [
+        "organization"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "soft"
+    },
+    {
+      "resource": "vendor",
+      "module": "core",
+      "resourceVersion": 1,
+      "file": "data/010-core/vendor.ndjson",
+      "schema": "schema/core.vendor.v1.schema.json",
+      "recordCount": 2,
+      "sha256": "ab215c50347aae3774b974e71e82d2270320e1fa29fd02bc0694b5a9bbb097f6",
+      "dependsOn": [
+        "company"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "soft"
+    },
+    {
+      "resource": "purchase_order",
+      "module": "procurement",
+      "resourceVersion": 1,
+      "file": "data/050-procurement/purchase_order.ndjson",
+      "schema": "schema/procurement.purchase_order.v1.schema.json",
+      "recordCount": 2,
+      "sha256": "6f14b5df277f88df6d337ba36051f946bd95002d4dffc3f094d448da42c649b9",
+      "dependsOn": [
+        "company",
+        "vendor"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "soft"
+    },
+    {
+      "resource": "purchase_order_line",
+      "module": "procurement",
+      "resourceVersion": 1,
+      "file": "data/050-procurement/purchase_order_line.ndjson",
+      "schema": "schema/procurement.purchase_order_line.v1.schema.json",
+      "recordCount": 3,
+      "sha256": "fd5a2604d51c1783861e35db337dac547135240622733d72039c5154d742b0c1",
+      "dependsOn": [
+        "purchase_order"
+      ],
+      "contentClass": "business",
+      "deleteSemantics": "none"
+    }
+  ],
+  "blobs": {
+    "count": 1,
+    "bytes": 31,
+    "index": "blobs/index.ndjson"
+  }
+}

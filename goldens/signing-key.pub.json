@@ -1,0 +1,9 @@
+{
+    "kid": "76e65bd2ec932008",
+    "alg": "EdDSA",
+    "use": "sig",
+    "crv": "Ed25519",
+    "x": "LZ8h8td3oURJma5LcSOPElokf55mpB226eKxTiLCepk",
+    "kty": "OKP",
+    "comment": "Verification key for the sealed golden bundles in this directory. Public half only — see goldens/README.md."
+}

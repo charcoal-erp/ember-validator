@@ -1,0 +1,73 @@
+{
+    "$comment": "Sealed golden bundles. See README.md before touching anything in this directory.",
+    "supportWindowMonths": 36,
+    "goldens": [
+        {
+            "id": "1.0-minimal",
+            "formatVersion": "1.0",
+            "era": "1.0 minimal",
+            "why": "The smallest conformant bundle: the hand-written example the validator was first written against, independent of the exporter. Catches any change that makes a bare-bones bundle unreadable.",
+            "provenance": "packages/ember-validator/examples/acme-mini (hand-written, Phase 0)",
+            "profile": "full",
+            "bundleType": "full",
+            "resources": 5,
+            "records": 10,
+            "features": [
+                "blobs",
+                "catalog"
+            ],
+            "sealedAt": "2026-08-15",
+            "bundleDigest": "sha256:9395933de0bfa92ff0d46f1a2ffe3b9c58a11b684468cafa8cb6a1aa16c86103",
+            "role": "conformance",
+            "roleReason": "Hand-written against the spec in Phase 0 and NEVER produced by Charcoal's exporter. Tier 2 found it carries company.Code \u2014 a column that has never existed on the Company entity \u2014 so it cannot be imported and never could have been. It stays as a VALIDATOR-conformance golden (the minimal shape a reader must accept); it is not evidence about the importer, and the 36-month promise covers bundles PRODUCED BY CHARCOAL, which this is not."
+        },
+        {
+            "id": "1.0-full",
+            "formatVersion": "1.0",
+            "era": "1.0 full-shape",
+            "why": "A real exporter's output across 8 module databases, carrying the shapes a minimal bundle never exercises: embedded children, numbering watermarks, the resolved-settings sidecar, per-DB snapshot consistency, pseudonymized values.",
+            "provenance": "backends examples/acme-mini (the Phase-4 committed fixture, produced by the real exporter)",
+            "profile": "fixture",
+            "bundleType": "subset",
+            "resources": 30,
+            "records": 76,
+            "features": [
+                "embeds",
+                "watermarks",
+                "resolved",
+                "catalog",
+                "consistency",
+                "pseudonymized"
+            ],
+            "sealedAt": "2026-08-15",
+            "bundleDigest": "sha256:e1b237752e55968472149a7898c24d34c14ba4bfa9e0a4869de698573ce594ee",
+            "role": "importer",
+            "roleReason": "Real exporter output: the golden that carries the import promise."
+        },
+        {
+            "id": "1.0-adapter",
+            "formatVersion": "1.0",
+            "era": "1.0 adapter profile",
+            "why": "A bundle produced by a third party rather than by Charcoal \u2014 the migration profile, with the allocate id-policy hint, $source provenance on every record and control totals. This is the golden that proves the format is writable from outside, which is the whole no-lock-in claim.",
+            "provenance": "packages/ember-validator/examples/adapter-csv/bundle (Phase-5 unit 2 worked adapter)",
+            "profile": "migration",
+            "bundleType": "subset",
+            "resources": 4,
+            "records": 11,
+            "features": [
+                "allocate",
+                "$source",
+                "controls"
+            ],
+            "sealedAt": "2026-08-15",
+            "bundleDigest": "sha256:54fe81469cd08589dd3920e975174cbe0b47d1a91c572a496f17b58df60728f4",
+            "role": "importer",
+            "requiresBase": "1.0-full",
+            "roleReason": "allocate-mode: organization and company are ANCHORS resolved by natural key on the target, so this bundle REQUIRES the tenant to already exist. Tier 2 imports 1.0-full first and layers this on top without truncating in between \u2014 which is also exactly how a real adapter migration runs."
+        }
+    ],
+    "$roles": {
+        "conformance": "Tier 1 only \u2014 must verify and keep its pinned digest. Not imported, and NOT field-checked against the current entity manifest.",
+        "importer": "Tier 1 (verify + digest + resourceVersion + FIELD compatibility against the current entity manifest) and tier 2 (actually restored into a stack)."
+    }
+}

@@ -1,0 +1,3 @@
+{"basis":"count of rows in vendors.csv","control":"vendor_count","legacyValue":"4","tolerance":"0"}
+{"basis":"count of rows in contacts.csv","control":"vendor_contact_count","legacyValue":"5","tolerance":"0"}
+{"basis":"sum of CreditLimit over all suppliers, source currency INR","control":"vendor_credit_limit_total","legacyValue":"875000","tolerance":"0.00"}
